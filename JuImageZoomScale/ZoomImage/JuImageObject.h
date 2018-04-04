@@ -9,5 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @interface JuImageObject : NSObject
-
+@property (nonatomic,copy) NSString *ju_imageUrl;///< 
+@property (nonatomic,copy) NSString  *ju_thumbImageUrl;
 @end

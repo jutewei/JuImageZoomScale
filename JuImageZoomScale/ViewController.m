@@ -7,8 +7,12 @@
 //
 
 #import "ViewController.h"
+#import "JuAlbumPreviewVC.h"
+#import "JuLargeImageVC.h"
 
-@interface ViewController ()
+@interface ViewController (){
+   
+}
 
 @end
 
@@ -16,9 +20,24 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+
     // Do any additional setup after loading the view, typically from a nib.
 }
-
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+//      viewC.ju_ArrList=@[@"3.jpg",@"1.jpg"];
+   
+}
+- (IBAction)juTouchAlbum:(id)sender {
+    JuAlbumPreviewVC *vc=[[JuAlbumPreviewVC alloc]init];
+    [self.navigationController pushViewController:vc animated:YES];
+}
+- (IBAction)juTouchLarge:(id)sender {
+//    此处需用自定义动画
+    JuLargeImageVC *vc=[[JuLargeImageVC alloc]init];
+    [self.navigationController pushViewController:vc animated:YES];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

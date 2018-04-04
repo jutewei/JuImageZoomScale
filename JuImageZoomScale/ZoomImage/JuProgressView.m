@@ -53,7 +53,7 @@
     ju_progressLayer = [CAShapeLayer layer];
     ju_progressLayer.fillColor = nil;
     ju_progressLayer.frame = self.bounds;
-
+    ju_progressLayer.lineCap = kCALineCapRound; // 设置线为圆角
 
     [self.layer addSublayer:ju_backLayer];
     [self.layer addSublayer:ju_progressLayer];
@@ -73,6 +73,7 @@
 -(void)setJu_Progress:(CGFloat)ju_Progress{
     _ju_Progress = ju_Progress;
     ju_progressPath = [UIBezierPath bezierPathWithArcCenter:CGPointMake(CGRectGetWidth(self.bounds)/2.0, CGRectGetHeight(self.bounds)/2.0)  radius:(CGRectGetWidth(self.bounds)-_ju_progressWidth)/2.f startAngle:-M_PI_2 endAngle:(2*M_PI)*_ju_Progress-M_PI_2 clockwise:YES];
+
     ju_progressLayer.path = ju_progressPath.CGPath;
     if (_isShowProgress) {
         self.ju_labProgressl.text=[NSString stringWithFormat:@"%d%%",(int)(_ju_Progress*100)];
