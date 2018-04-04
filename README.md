@@ -8,11 +8,15 @@
 ****具体使用方法
 
 JuImagesCollectView *ju_imgCollectView=[[JuImagesCollectView alloc]init];
+
     [self.view addSubview:ju_imgCollectView];
+    
     ju_imgCollectView.juEdge(UIEdgeInsetsMake(0, 0, 0, 0));
+    
     ju_imgCollectView.ju_handle = ^CGRect(id result) {
         return CGRectMake(100, 150, 100, 100);
     };
+    
     [ju_imgCollectView juSetImages:@[[UIImage imageNamed:@"3.jpg"],
     [UIImage imageNamed:@"1.jpg"],
     @"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/03/16-49-060144-1442918276.jpeg",
