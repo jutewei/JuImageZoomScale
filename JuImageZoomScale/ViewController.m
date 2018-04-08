@@ -10,6 +10,7 @@
 #import "JuAlbumPreviewVC.h"
 #import "JuLargeImageVC.h"
 
+
 @interface ViewController (){
    
 }
@@ -30,13 +31,16 @@
    
 }
 - (IBAction)juTouchAlbum:(id)sender {
+    
     JuAlbumPreviewVC *vc=[[JuAlbumPreviewVC alloc]init];
     [self.navigationController pushViewController:vc animated:YES];
 }
 - (IBAction)juTouchLarge:(id)sender {
-//    此处需用自定义动画
-    JuLargeImageVC *vc=[[JuLargeImageVC alloc]init];
-    [self.navigationController pushViewController:vc animated:YES];
+    JuLargeImageVC *vc=[JuLargeImageVC initView:self.navigationController.view endRect:^CGRect(id result) {
+        return CGRectMake(100, 150, 100, 100);
+    }];
+    [vc juSetImages:@[[UIImage imageNamed:@"3.jpg"],[UIImage imageNamed:@"1.jpg"],@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/03/16-49-060144-1442918276.jpeg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-37-080036-1235239760.jpg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-15-220471701481425.jpg"] currentIndex:0 startRect:CGRectMake(100, 200, 100, 100)];
+    [self presentViewController:vc animated:NO completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {

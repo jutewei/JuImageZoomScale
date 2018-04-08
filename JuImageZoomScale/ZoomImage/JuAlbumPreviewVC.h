@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface JuAlbumPreviewVC : UIViewController
-
+-(void)juSetImages:(NSArray *)arrList currentIndex:(NSInteger)index;
 @end

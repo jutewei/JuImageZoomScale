@@ -250,20 +250,20 @@
 			isa = PBXGroup;
 			children = (
 				EBCC41022074D043001DA272 /* JuDefine.h */,
-				EBCC40FF2074D043001DA272 /* JuAlbumPreviewVC.h */,
-				EBCC41072074D043001DA272 /* JuAlbumPreviewVC.m */,
-				EBCC41092074D043001DA272 /* JuImageObject.h */,
-				EBCC40FD2074D043001DA272 /* JuImageObject.m */,
-				EBCC41082074D043001DA272 /* JuImagesCollectCell.h */,
-				EBCC40FE2074D043001DA272 /* JuImagesCollectCell.m */,
-				EBCC41042074D043001DA272 /* JuImagesCollectView.h */,
-				EBCC40FB2074D043001DA272 /* JuImagesCollectView.m */,
-				EBCC41052074D043001DA272 /* JuLargeImageVC.h */,
-				EBCC41002074D043001DA272 /* JuLargeImageVC.m */,
 				EBCC41062074D043001DA272 /* JuProgressView.h */,
 				EBCC41012074D043001DA272 /* JuProgressView.m */,
 				EBCC41032074D043001DA272 /* JuZoomScaleView.h */,
 				EBCC40FC2074D043001DA272 /* JuZoomScaleView.m */,
+				EBCC41042074D043001DA272 /* JuImagesCollectView.h */,
+				EBCC40FB2074D043001DA272 /* JuImagesCollectView.m */,
+				EBCC41082074D043001DA272 /* JuImagesCollectCell.h */,
+				EBCC40FE2074D043001DA272 /* JuImagesCollectCell.m */,
+				EBCC41092074D043001DA272 /* JuImageObject.h */,
+				EBCC40FD2074D043001DA272 /* JuImageObject.m */,
+				EBCC41052074D043001DA272 /* JuLargeImageVC.h */,
+				EBCC41002074D043001DA272 /* JuLargeImageVC.m */,
+				EBCC40FF2074D043001DA272 /* JuAlbumPreviewVC.h */,
+				EBCC41072074D043001DA272 /* JuAlbumPreviewVC.m */,
 			);
 			path = ZoomImage;
 			sourceTree = "<group>";
@@ -514,6 +514,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3Y5SHRC9L9;
 				INFOPLIST_FILE = JuImageZoomScale/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -530,6 +531,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3Y5SHRC9L9;
 				INFOPLIST_FILE = JuImageZoomScale/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

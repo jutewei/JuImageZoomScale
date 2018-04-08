@@ -30,7 +30,10 @@
     return CGRectZero;
 }
 -(void)juSetImage:(id)imageData originalFrame:(CGRect)frame{
+
+    ju_cellImage=imageData;
     [ju_scaleView setImage:imageData originalRect:frame];
+
     ju_scaleView.ju_isAlbum=_ju_isAlbum;
 }
 @end

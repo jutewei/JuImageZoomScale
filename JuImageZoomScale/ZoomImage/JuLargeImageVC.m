@@ -9,7 +9,7 @@
 #import "JuLargeImageVC.h"
 #import "JuImagesCollectView.h"
 #import "UIView+JuLayout.h"
-@interface JuLargeImageVC ()<UIViewControllerTransitioningDelegate>{
+@interface JuLargeImageVC ()<UIViewControllerTransitioningDelegate,UINavigationControllerDelegate>{
      JuImagesCollectView *ju_imgCollectView;
 }
 
@@ -17,18 +17,39 @@
 
 @implementation JuLargeImageVC
 
+-(instancetype)init{
+    self=[super init];
+    if (self) {
+        ju_imgCollectView=[[JuImagesCollectView alloc]init];
+    }
+    return self;
+}
++(instancetype)initView:(UIView *)view{
+    return [self initView:view endRect:nil];
+}
++(instancetype)initView:(UIView *)view endRect:(JuHandle)handle{
+    JuLargeImageVC *vc=[[JuLargeImageVC alloc]init];
+    vc.ju_handle =  handle;
+//    [view addSubview:vc.view];
+    return vc;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
-    ju_imgCollectView=[[JuImagesCollectView alloc]init];
+    ju_imgCollectView.ju_handle = self.ju_handle;
     [self.view addSubview:ju_imgCollectView];
     ju_imgCollectView.juEdge(UIEdgeInsetsMake(0, 0, 0, 0));
-    ju_imgCollectView.ju_handle = ^CGRect(id result) {
-        return CGRectMake(100, 150, 100, 100);
+    __weak typeof(self) weakSelf = self;
+    ju_imgCollectView.ju_completion = ^{
+        [weakSelf dismissViewControllerAnimated:NO completion:nil];
     };
-    [ju_imgCollectView juSetImages:@[[UIImage imageNamed:@"3.jpg"],[UIImage imageNamed:@"1.jpg"],@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/03/16-49-060144-1442918276.jpeg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-37-080036-1235239760.jpg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-15-220471701481425.jpg"] currentIndex:2 rect:CGRectMake(100, 200, 100, 100)];
     // Do any additional setup after loading the view.
 }
-
+-(void)juSetImages:(NSArray *)arrList currentIndex:(NSInteger)index startRect:(CGRect)frame{
+    [ju_imgCollectView juSetImages:arrList currentIndex:index rect:frame];
+}
+-(BOOL)prefersStatusBarHidden{
+    return YES;
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
