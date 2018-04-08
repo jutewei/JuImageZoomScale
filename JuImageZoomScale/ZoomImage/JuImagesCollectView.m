@@ -41,9 +41,22 @@
     collectView.juEdge(UIEdgeInsetsMake(0, 0, 0, 0));
     collectView.ju_Trail.constant=-20;
     _ju_collectView=collectView;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeFrame:) name:UIDeviceOrientationDidChangeNotification object:nil];
     [self layoutIfNeeded];
 }
-
+// 屏幕转动，改变cell的frame
+- (void)changeFrame:(NSNotification *)notification{
+//    if (  ju_itemWidth!=JU_Window_Width+20) {
+    if (  ju_itemWidth!=JU_Window_Width+20) {
+        [_ju_collectView setContentOffset:CGPointMake(ju_currentIndex*(JU_Window_Width+20), 0)];
+    }
+    ju_itemWidth=JU_Window_Width+20;
+    UICollectionViewFlowLayout *layout=(id)_ju_collectView.collectionViewLayout;
+    layout.itemSize =CGSizeMake(ju_itemWidth, JU_Window_Height);
+    _ju_collectView.collectionViewLayout = layout;
+    [_ju_collectView.collectionViewLayout invalidateLayout];
+//    }
+}
 -(UICollectionViewFlowLayout *)juSetCollectLayout{
     UICollectionViewFlowLayout *layout=[[UICollectionViewFlowLayout alloc]init];
     layout.sectionInset=UIEdgeInsetsMake(0, 0, 0, 0);

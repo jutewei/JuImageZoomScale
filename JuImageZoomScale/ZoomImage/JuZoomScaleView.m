@@ -61,8 +61,8 @@
         self.minimumZoomScale               = 1.0;
         ju_queueFullImage=dispatch_queue_create("queue.getFullImage", DISPATCH_QUEUE_SERIAL);///< 串行队列
         [self shSetImageView];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(juStatusBarOrientationChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
-        self.autoresizingMask=UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleBottomMargin;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(juStatusBarOrientationChange:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+//        self.autoresizingMask=UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleBottomMargin;
     }
     return self;
 }
@@ -87,6 +87,7 @@
     if (ju_imgView.image) {
         [self setImage:ju_imgView.image];
     }
+//      self.frame=self.window.bounds;
 }
 -(void)shSetImageView{
     ju_imgView               = [[UIImageView alloc] init];
@@ -188,6 +189,7 @@
         [self juShowAnimation];
         isFinishLoad=YES;
         self.contentSize=ju_imgView.frame.size;
+
     }
 }
 - (void) juShowAnimation{

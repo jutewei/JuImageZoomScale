@@ -8,7 +8,7 @@
 
 #import "JuImagesCollectCell.h"
 #import "JuZoomScaleView.h"
-
+#import "UIView+JuLayout.h"
 @implementation JuImagesCollectCell
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -21,7 +21,8 @@
 }
 -(void)didMoveToWindow{
     [super didMoveToWindow];
-    ju_scaleView.frame=self.window.bounds;
+    ju_scaleView.juEdge(UIEdgeInsetsMake(0, 0, 0, 0));
+//    ju_scaleView.frame=self.window.bounds;
 }
 -(CGRect)juCurrentRect{
     if ([self.ju_delegate respondsToSelector:@selector(juCurrentRect)]) {
