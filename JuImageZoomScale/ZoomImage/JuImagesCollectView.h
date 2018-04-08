@@ -21,4 +21,5 @@
  */
 -(void)juSetImages:(NSArray *)arrList currentIndex:(NSInteger)index rect:(CGRect)frame;
 @property (nonatomic,copy) JuHandle ju_handle;
+@property (nonatomic,copy) JuCompletion ju_completion;
 @end

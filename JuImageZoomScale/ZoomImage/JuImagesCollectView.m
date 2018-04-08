@@ -24,8 +24,15 @@
     self =[super init];
     if (self) {
         [self juSetCollectView];
+          [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(juStatusBarOrientationChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
     }
     return self;
+}
+- (void)juStatusBarOrientationChange:(NSNotification *)notification{
+    if (  ju_itemWidth!=JU_Window_Width+20) {
+        [_ju_collectView setContentOffset:CGPointMake(ju_currentIndex*(JU_Window_Width+20), 0)];
+    }
+    [_ju_collectView reloadData];
 }
 -(void)juSetCollectView{
     UICollectionView *collectView=[[UICollectionView alloc]initWithFrame:CGRectZero collectionViewLayout:self.juSetCollectLayout];
@@ -78,12 +85,14 @@
     if (_ju_isAlbum) {
         return CGRectZero;
     }
-
+    
     [UIView animateWithDuration:0.3 animations:^{
         self.ju_collectView.backgroundColor=[UIColor colorWithWhite:0 alpha:0];
     }completion:^(BOOL finished) {
-        
-//        [self.superview removeFromSuperview];
+        [self removeFromSuperview];
+        if (self.ju_completion) {
+            self.ju_completion();
+        }
     }];
     if (self.ju_handle) {
         return  self.ju_handle(nil);
@@ -110,5 +119,7 @@
     // Drawing code
 }
 */
-
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
+}
 @end

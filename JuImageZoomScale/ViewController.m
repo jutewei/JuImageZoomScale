@@ -10,6 +10,7 @@
 #import "JuAlbumPreviewVC.h"
 #import "JuLargeImageVC.h"
 
+
 @interface ViewController (){
    
 }
@@ -30,6 +31,7 @@
    
 }
 - (IBAction)juTouchAlbum:(id)sender {
+    
     JuAlbumPreviewVC *vc=[[JuAlbumPreviewVC alloc]init];
     [self.navigationController pushViewController:vc animated:YES];
 }

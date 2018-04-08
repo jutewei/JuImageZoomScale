@@ -13,8 +13,8 @@
 #define JU_Window_Width [[UIScreen mainScreen] bounds].size.width
 
 //打印信息设置
-typedef void(^JuHandleData)(id result);//下步操作后有跟新数据
-typedef CGRect (^JuHandle)(id result);//下步操作后有跟新数据
+typedef void(^JuCompletion)(void);//回调
+typedef CGRect (^JuHandle)(id result);//坐标回调
 
 #define ju_dispatch_get_main_async(block)\
 if ([NSThread isMainThread]) {\
