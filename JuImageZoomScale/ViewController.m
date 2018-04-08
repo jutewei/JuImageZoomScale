@@ -36,7 +36,7 @@
 - (IBAction)juTouchLarge:(id)sender {
 //    此处需用自定义动画
     JuLargeImageVC *vc=[[JuLargeImageVC alloc]init];
-    [self.navigationController pushViewController:vc animated:YES];
+    [self presentViewController:vc animated:NO completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {
