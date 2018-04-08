@@ -33,6 +33,14 @@
 //    [view addSubview:vc.view];
     return vc;
 }
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+}
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     ju_imgCollectView.ju_handle = self.ju_handle;
@@ -40,7 +48,7 @@
     ju_imgCollectView.juEdge(UIEdgeInsetsMake(0, 0, 0, 0));
     __weak typeof(self) weakSelf = self;
     ju_imgCollectView.ju_completion = ^{
-        [weakSelf dismissViewControllerAnimated:NO completion:nil];
+        [weakSelf.navigationController popViewControllerAnimated:NO];
     };
     // Do any additional setup after loading the view.
 }

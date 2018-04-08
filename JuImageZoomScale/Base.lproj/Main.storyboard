@@ -43,6 +43,9 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="eYP-zr-G7w"/>
+                    <connections>
+                        <outlet property="ju_btnTouch" destination="ZG4-cu-sj5" id="d5W-Y9-Z5u"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
@@ -91,7 +94,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ea8-3K-pSY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1030" y="-49"/>
+            <point key="canvasLocation" x="-722" y="-119"/>
         </scene>
     </scenes>
 </document>
