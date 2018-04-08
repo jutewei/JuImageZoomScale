@@ -47,9 +47,7 @@
 -(void)juSetImages:(NSArray *)arrList currentIndex:(NSInteger)index startRect:(CGRect)frame{
     [ju_imgCollectView juSetImages:arrList currentIndex:index rect:frame];
 }
--(BOOL)prefersStatusBarHidden{
-    return YES;
-}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

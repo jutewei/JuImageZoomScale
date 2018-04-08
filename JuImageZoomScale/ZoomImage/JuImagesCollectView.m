@@ -24,16 +24,10 @@
     self =[super init];
     if (self) {
         [self juSetCollectView];
-          [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(juStatusBarOrientationChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
     }
     return self;
 }
-- (void)juStatusBarOrientationChange:(NSNotification *)notification{
-    if (  ju_itemWidth!=JU_Window_Width+20) {
-        [_ju_collectView setContentOffset:CGPointMake(ju_currentIndex*(JU_Window_Width+20), 0)];
-    }
-    [_ju_collectView reloadData];
-}
+
 -(void)juSetCollectView{
     UICollectionView *collectView=[[UICollectionView alloc]initWithFrame:CGRectZero collectionViewLayout:self.juSetCollectLayout];
     collectView.dataSource = self;
@@ -119,7 +113,5 @@
     // Drawing code
 }
 */
-- (void)dealloc{
-    [[NSNotificationCenter defaultCenter]removeObserver:self];
-}
+
 @end
