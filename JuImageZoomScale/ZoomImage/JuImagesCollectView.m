@@ -16,7 +16,7 @@
     CGFloat ju_itemWidth;
     CGRect ju_originalFrame;
 }
-@property (nonatomic,readonly)UICollectionView *ju_collectView;
+
 @end
 
 @implementation JuImagesCollectView
@@ -80,16 +80,18 @@
     return cell;
 }
 -(CGRect)juCurrentRect{
-    if (_ju_isAlbum) {
-        return CGRectZero;
-    }
-
     if (self.ju_handle) {
         return  self.ju_handle(nil);
     }
     return CGRectZero;
 }
 -(void)juTapHidder{
+    if (_ju_isAlbum) {
+        if (self.ju_completion) {
+            self.ju_completion();
+        }
+        return;
+    }
     [UIView animateWithDuration:0.3 animations:^{
         self.ju_collectView.backgroundColor=[UIColor colorWithWhite:0 alpha:0];
     }completion:^(BOOL finished) {

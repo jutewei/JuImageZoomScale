@@ -21,7 +21,7 @@
 }
 -(void)didMoveToWindow{
     [super didMoveToWindow];
-    ju_scaleView.juEdge(UIEdgeInsetsMake(0, 0, 0, 0));
+    ju_scaleView.juEdge(UIEdgeInsetsMake(0, 0, 0, 20));
 //    ju_scaleView.frame=self.window.bounds;
 }
 -(CGRect)juCurrentRect{

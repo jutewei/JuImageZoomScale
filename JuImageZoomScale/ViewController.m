@@ -34,6 +34,7 @@
 - (IBAction)juTouchAlbum:(id)sender {
     
     JuAlbumPreviewVC *vc=[[JuAlbumPreviewVC alloc]init];
+    [vc juSetImages:@[[UIImage imageNamed:@"3.jpg"],[UIImage imageNamed:@"1.jpg"],@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/03/16-49-060144-1442918276.jpeg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-37-080036-1235239760.jpg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-15-220471701481425.jpg"] currentIndex:0];
     [self.navigationController pushViewController:vc animated:YES];
 }
 - (IBAction)juTouchLarge:(id)sender {

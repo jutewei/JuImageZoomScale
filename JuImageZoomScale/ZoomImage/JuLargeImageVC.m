@@ -43,6 +43,11 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+    if (@available(iOS 11.0, *)) {
+        ju_imgCollectView.ju_collectView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    }else{
+        self.automaticallyAdjustsScrollViewInsets=NO;
+    }
     ju_imgCollectView.ju_handle = self.ju_handle;
     [self.view addSubview:ju_imgCollectView];
     ju_imgCollectView.juEdge(UIEdgeInsetsMake(0, 0, 0, 0));

@@ -12,6 +12,7 @@
 
 @property(nonatomic,strong) NSArray  *ju_ArrList;///< 数据
 @property(nonatomic,assign) BOOL  ju_isAlbum;///< 相册
+@property (nonatomic,readonly)UICollectionView *ju_collectView;
 /**
  设置图片
 
