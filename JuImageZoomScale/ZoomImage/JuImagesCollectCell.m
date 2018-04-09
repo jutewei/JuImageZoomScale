@@ -30,6 +30,11 @@
     }
     return CGRectZero;
 }
+-(void)juTapHidder{
+    if ([self.ju_delegate respondsToSelector:@selector(juTapHidder)]) {
+        return [self.ju_delegate juTapHidder];
+    }
+}
 -(void)juSetImage:(id)imageData originalFrame:(CGRect)frame{
 
     [ju_scaleView setImage:imageData originalRect:frame];

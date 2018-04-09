@@ -10,14 +10,11 @@
 #import "JuDefine.h"
 @protocol JuImageZoomScaleDelegate <NSObject>
 @optional
-- (void) tapImageViewTappedWithObject:(id) sender;
 /**
- 当前预览
+ 当前预览坐标
  */
 -(CGRect)juCurrentRect;
-
--(void)juTapHideBar;
--(void)juScrollViewDidEndDecelerating:(UIScrollView *)scrollView;
+-(void)juTapHidder;
 @end
 
 @interface JuZoomScaleView : UIScrollView

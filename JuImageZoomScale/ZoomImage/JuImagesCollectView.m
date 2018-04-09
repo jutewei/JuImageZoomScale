@@ -46,16 +46,7 @@
 }
 // 屏幕转动，改变cell的frame
 - (void)changeFrame:(NSNotification *)notification{
-//    if (  ju_itemWidth!=JU_Window_Width+20) {
-    if (  ju_itemWidth!=JU_Window_Width+20) {
-        [_ju_collectView setContentOffset:CGPointMake(ju_currentIndex*(JU_Window_Width+20), 0)];
-    }
-    ju_itemWidth=JU_Window_Width+20;
-    UICollectionViewFlowLayout *layout=(id)_ju_collectView.collectionViewLayout;
-    layout.itemSize =CGSizeMake(ju_itemWidth, JU_Window_Height);
-    _ju_collectView.collectionViewLayout = layout;
     [_ju_collectView.collectionViewLayout invalidateLayout];
-//    }
 }
 -(UICollectionViewFlowLayout *)juSetCollectLayout{
     UICollectionViewFlowLayout *layout=[[UICollectionViewFlowLayout alloc]init];
@@ -92,19 +83,20 @@
     if (_ju_isAlbum) {
         return CGRectZero;
     }
-    
-    [UIView animateWithDuration:0.3 animations:^{
-        self.ju_collectView.backgroundColor=[UIColor colorWithWhite:0 alpha:0];
-    }completion:^(BOOL finished) {
-        [self removeFromSuperview];
-        if (self.ju_completion) {
-            self.ju_completion();
-        }
-    }];
+
     if (self.ju_handle) {
         return  self.ju_handle(nil);
     }
     return CGRectZero;
+}
+-(void)juTapHidder{
+    [UIView animateWithDuration:0.3 animations:^{
+        self.ju_collectView.backgroundColor=[UIColor colorWithWhite:0 alpha:0];
+    }completion:^(BOOL finished) {
+        if (self.ju_completion) {
+            self.ju_completion();
+        }
+    }];
 }
 #pragma mark 拖动时赋值
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
@@ -118,6 +110,9 @@
     }
     ju_itemWidth=JU_Window_Width+20;
     return CGSizeMake(ju_itemWidth, JU_Window_Height);
+}
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
 /*
 // Only override drawRect: if you perform custom drawing.

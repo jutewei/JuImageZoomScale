@@ -13,11 +13,9 @@
 #import <Photos/Photos.h>
 @interface JuZoomScaleView()<UIScrollViewDelegate>{
     //记录自己的位置
-    CGRect scaleOriginRect;
-    //图片的大小
-    NSString *imgUrl;
+    CGRect ju_originRect;
     //缩放前大小
-    CGRect ju_originalRect;
+    CGRect ju_smallRect;
     BOOL isFinishLoad;
     dispatch_queue_t ju_queueFullImage;
 }
@@ -62,7 +60,6 @@
         ju_queueFullImage=dispatch_queue_create("queue.getFullImage", DISPATCH_QUEUE_SERIAL);///< 串行队列
         [self shSetImageView];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(juStatusBarOrientationChange:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
-//        self.autoresizingMask=UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleBottomMargin;
     }
     return self;
 }
@@ -119,7 +116,7 @@
     if (originalRect.size.width>0) {
         _isAnimate=YES;
         ju_imgView.frame = originalRect;
-        ju_originalRect = originalRect;
+        ju_smallRect = originalRect;
     }
     if ([imageObject isKindOfClass:[UIImage class]]) {
         [self setImage:imageObject];
@@ -172,61 +169,44 @@
         //判断首先缩放的值
         float scaleX = JU_Window_Width/imgSize.width;
         float scaleY = JU_Window_Height/imgSize.height;
-
         //倍数小的，先到边缘
         if (scaleX > scaleY){
             //Y方向先到边缘
             float imgViewWidth = imgSize.width*scaleY;
             self.maximumZoomScale =MAX(2.5, JU_Window_Width/imgViewWidth) ;
-            scaleOriginRect = (CGRect){JU_Window_Width/2-imgViewWidth/2,0,imgViewWidth,JU_Window_Height};
+            ju_originRect = (CGRect){JU_Window_Width/2-imgViewWidth/2,0,imgViewWidth,JU_Window_Height};
         }
         else{
             //X先到边缘
             float imgViewHeight = imgSize.height*scaleX;
             self.maximumZoomScale =MAX(2.5, JU_Window_Height/imgViewHeight) ;
-            scaleOriginRect = (CGRect){0,JU_Window_Height/2-imgViewHeight/2,JU_Window_Width,imgViewHeight};
+            ju_originRect = (CGRect){0,JU_Window_Height/2-imgViewHeight/2,JU_Window_Width,imgViewHeight};
         }
         [self juShowAnimation];
         isFinishLoad=YES;
-        self.contentSize=ju_imgView.frame.size;
-
     }
 }
 - (void) juShowAnimation{
-    ju_imgView.transform = CGAffineTransformMakeScale(1, 1);///< 修复图片大小变为0
+//    ju_imgView.transform = CGAffineTransformMakeScale(1, 1);///< 修复图片大小变为0
+     self.zoomScale=1.0;
     [UIView animateWithDuration:_isAnimate?0.3:0 animations:^{
-        self.ju_imgView.frame = self->scaleOriginRect;
+        self.ju_imgView.frame = self->ju_originRect;
     }completion:^(BOOL finished) {
-        self.ju_imgView.frame =self->scaleOriginRect;
-    }];
-}
-//隐藏动画
-- (void) juHiddenAnimation{
-//    [[UIApplication sharedApplication] setStatusBarHidden:NO];
-    [UIView animateWithDuration:self.zoomScale==1.0?0:0.3 animations:^{
-        self.zoomScale=1.0;
-    } completion:^(BOOL finished) {
-        [UIView animateWithDuration:0.3 animations:^{
-            if (self.isAnimate)  {
-                self.ju_imgView.frame =self->ju_originalRect;
-                self.superview.backgroundColor=[UIColor clearColor];
-            }
-            else self.superview.alpha=0.0;
-        } completion:^(BOOL finished) {
-            [self.superview removeFromSuperview];
-        }];
+         self.contentSize=self.ju_imgView.frame.size;
     }];
 }
 //隐藏
 -(void)juTouchTap{
+
+    if (_ju_isAlbum&&[self.ju_delegate respondsToSelector:@selector(juTapHidder)]) {
+        [self.ju_delegate juTapHidder];
+        return;
+    }
+
     if ([self.ju_delegate respondsToSelector:@selector(juCurrentRect)]) {///< 网络图片看大图
-        if (_ju_isAlbum) {
-            [self.ju_delegate juCurrentRect];
-            return;
-        }
         CGRect frame= [self.ju_delegate juCurrentRect];
         if (frame.size.width>0) {
-            ju_originalRect=frame;
+            ju_smallRect=frame;
             _isAnimate=YES;
         }
         CGRect winFrame=self.window.frame;
@@ -238,6 +218,35 @@
         [self juHiddenAnimation];
     }
 }
+
+//恢复到原始zoom
+- (void) juHiddenAnimation{
+
+    [UIView animateWithDuration:self.zoomScale==1.0?0:0.3 animations:^{
+        self.zoomScale=1.0;
+    } completion:^(BOOL finished) {
+        [self juAnimationChangSize];
+    }];
+}
+
+/**
+ 缩放动画
+ */
+-(void)juAnimationChangSize{
+    if ([self.ju_delegate respondsToSelector:@selector(juTapHidder)]) {
+        [self.ju_delegate juTapHidder];
+    }
+    if (!self.isAnimate) {
+        return;
+    }
+
+    [UIView animateWithDuration:0.3 animations:^{
+        self.ju_imgView.frame =self->ju_smallRect;
+    } completion:^(BOOL finished) {
+
+    }];
+}
+
 -(void)juTouchLong:(id)sender{
     NSLog(@"长按");
 }
