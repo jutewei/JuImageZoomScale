@@ -9,7 +9,7 @@
 #import "ViewController.h"
 #import "JuAlbumPreviewVC.h"
 #import "JuLargeImageVC.h"
-
+#import "JuNavigationController.h"
 
 @interface ViewController (){
    
@@ -41,8 +41,9 @@
     JuLargeImageVC *vc=[JuLargeImageVC initView:self.navigationController.view endRect:^CGRect(id result) {
         return CGRectMake(100, 150, 100, 100);
     }];
+     JuNavigationController *NavVC=[[JuNavigationController alloc]initWithRootViewController:vc];
     [vc juSetImages:@[[UIImage imageNamed:@"3.jpg"],[UIImage imageNamed:@"1.jpg"],@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/03/16-49-060144-1442918276.jpeg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-37-080036-1235239760.jpg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-15-220471701481425.jpg"] currentIndex:0 startRect:CGRectMake(100, 200, 100, 100)];
-    [self.navigationController pushViewController:vc animated:NO];
+    [self presentViewController:NavVC animated:YES completion:nil];
 }
 
 -(void)setRegisterPreviewingView:(UIView *)view{
@@ -52,21 +53,20 @@
 
 }
 -(UIViewController *)shPreviewVC:(id <UIViewControllerPreviewing>)previewingContext{
+
+
     JuLargeImageVC *vc=[JuLargeImageVC initView:self.navigationController.view endRect:^CGRect(id result) {
         return CGRectMake(100, 150, 100, 100);
     }];
+    JuNavigationController *NavVC=[[JuNavigationController alloc]initWithRootViewController:vc];
     [vc juSetImages:@[[UIImage imageNamed:@"3.jpg"],[UIImage imageNamed:@"1.jpg"],@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/03/16-49-060144-1442918276.jpeg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-37-080036-1235239760.jpg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-15-220471701481425.jpg"] currentIndex:0 startRect:CGRectMake(100, 200, 100, 100)];
 
-    return vc;
+    return NavVC;
 }
 //pop（按用点力进入视图）
 - (void)previewingContext:(id <UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
-    UIViewController *showVC=viewControllerToCommit;
-    if ([viewControllerToCommit isKindOfClass:[UINavigationController class]]&&viewControllerToCommit.childViewControllers.count) {
-        showVC=viewControllerToCommit.childViewControllers.firstObject;
-        viewControllerToCommit=nil;
-    }
-    [self showViewController:showVC sender:self];
+
+    [self showViewController:viewControllerToCommit sender:self];
 }
 //peek(预览)
 - (nullable UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location
@@ -83,6 +83,7 @@
     //返回预览界面
     return vc;
 }
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

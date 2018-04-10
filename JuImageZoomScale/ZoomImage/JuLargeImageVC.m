@@ -9,7 +9,8 @@
 #import "JuLargeImageVC.h"
 #import "JuImagesCollectView.h"
 #import "UIView+JuLayout.h"
-@interface JuLargeImageVC ()<UIViewControllerTransitioningDelegate,UINavigationControllerDelegate>{
+
+@interface JuLargeImageVC (){
      JuImagesCollectView *ju_imgCollectView;
 }
 
@@ -27,6 +28,8 @@
 +(instancetype)initView:(UIView *)view{
     return [self initView:view endRect:nil];
 }
+
+
 +(instancetype)initView:(UIView *)view endRect:(JuHandle)handle{
     JuLargeImageVC *vc=[[JuLargeImageVC alloc]init];
     vc.ju_handle =  handle;
@@ -53,7 +56,7 @@
     ju_imgCollectView.juEdge(UIEdgeInsetsMake(0, 0, 0, 0));
     __weak typeof(self) weakSelf = self;
     ju_imgCollectView.ju_completion = ^{
-        [weakSelf.navigationController popViewControllerAnimated:NO];
+        [weakSelf dismissViewControllerAnimated:NO completion:nil];
     };
     // Do any additional setup after loading the view.
 }

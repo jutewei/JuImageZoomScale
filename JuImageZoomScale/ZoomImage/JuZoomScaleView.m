@@ -10,6 +10,7 @@
 #import "UIImageView+ModCache.h"
 #import "JuImageObject.h"
 #import "JuProgressView.h"
+#import "UIView+Frame.h"
 #import <Photos/Photos.h>
 @interface JuZoomScaleView()<UIScrollViewDelegate>{
     //记录自己的位置
@@ -18,9 +19,13 @@
     CGRect ju_smallRect;
     BOOL isFinishLoad;
     dispatch_queue_t ju_queueFullImage;
+    BOOL isDruging;
+    CGRect ju_imgMoveRect;
+    CGPoint ju_imgMoveOffset;
 }
 @property  BOOL isAnimate;
 @property (nonatomic,strong) JuProgressView *sh_progressView;
+@property (nonatomic,strong) UIImageView *ju_imageMove;
 @end
 
 @implementation JuZoomScaleView
@@ -53,7 +58,8 @@
 
         UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(juTouchLong:)];
         [self addGestureRecognizer:longPress];
-
+        self.alwaysBounceVertical=YES;
+        self.alwaysBounceHorizontal=YES;
         self.maximumZoomScale               = 2;
         self.bouncesZoom                    = YES;
         self.minimumZoomScale               = 1.0;
@@ -298,6 +304,67 @@
     }
 
     ju_imgView.center = centerPoint;
+}
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    CGFloat  scrollNewY = scrollView.contentOffset.y;
+    if (scrollNewY <-50&&self.dragging){
+        isDruging=YES;
+        ju_imgMoveRect=self.ju_imgView.frame;
+        ju_imgMoveOffset=self.contentOffset;
+    }
+    if (isDruging) {
+        self.ju_imgView.hidden=YES;
+        [self juTouchPan:scrollView.panGestureRecognizer];
+        self.ju_imageMove.hidden=NO;
+    }
+}
+//结束拖拽
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
+
+    if (isDruging) {
+         isDruging=NO;
+        [UIView animateWithDuration:0.4 animations:^{
+            self.ju_imgView.frame=self->ju_imgMoveRect;
+            self->ju_imgMoveRect.origin.y+=20;
+            self.ju_imageMove.frame=self->ju_imgMoveRect;
+             self.ju_imageMove.originX=-self->ju_imgMoveOffset.x;
+        }completion:^(BOOL finished) {
+            self.ju_imgView.hidden=NO;
+            self.ju_imageMove.hidden=YES;
+             self.ju_imageMove=nil;
+        }];
+    }
+
+}
+- (void)juTouchPan:(UIPanGestureRecognizer *)pan{
+
+    if (!self.ju_imageMove) {
+        self.ju_imageMove=[[UIImageView alloc]init];
+        self.ju_imageMove.frame=ju_imgMoveRect;
+        self.ju_imageMove.originX=-ju_imgMoveOffset.x;
+        self.ju_imageMove.image=self.ju_imgView.image;
+        [self.superview addSubview:self.ju_imageMove];
+    }
+    CGPoint panX = [pan translationInView:self];
+    CGFloat moveW,moveH;
+    if (panX.y>0) {
+         moveW=ju_imgMoveRect.size.width*(MAX(0.3,1-panX.y/300.0));
+         moveH=ju_imgMoveRect.size.height*(MAX(0.3,1-panX.y/300.0) );
+    }else{
+         moveW=ju_imgMoveRect.size.width*(MAX(0.8,1+panX.y/300.0) );
+         moveH=ju_imgMoveRect.size.height*(MAX(0.8,1+panX.y/300.0));
+    }
+    CGFloat moveY=ju_imgMoveRect.origin.y+panX.y;
+    CGFloat moveX=(-ju_imgMoveOffset.x)+panX.x+(ju_imgMoveRect.size.width-moveW)/2.0;
+
+
+    self.ju_imageMove.sizeW=moveW;
+    self.ju_imageMove.sizeH=moveH;
+    self.ju_imageMove.originY=moveY*1.4;//触摸点当前的y
+    self.ju_imageMove.originX=moveX ;
+//    self.ju_imageMove.originX=MIN(moveX, 100);
+
+
 }
 
 - (void)dealloc{
