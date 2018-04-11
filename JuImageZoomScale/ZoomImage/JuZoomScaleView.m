@@ -21,7 +21,7 @@
     dispatch_queue_t ju_queueFullImage;
     BOOL isDruging;
     CGRect ju_imgMoveRect;
-    CGPoint ju_imgMoveOffset;
+    CGPoint ju_moveBeginPoint,ju_imgBeginPoint;
 }
 @property  BOOL isAnimate;
 @property (nonatomic,strong) JuProgressView *sh_progressView;
@@ -310,7 +310,6 @@
     if (scrollNewY <-50&&self.dragging){
         isDruging=YES;
         ju_imgMoveRect=self.ju_imgView.frame;
-        ju_imgMoveOffset=self.contentOffset;
     }
     if (isDruging) {
         self.ju_imgView.hidden=YES;
@@ -323,11 +322,12 @@
 
     if (isDruging) {
          isDruging=NO;
+        ju_moveBeginPoint=CGPointMake(0, 0);
         [UIView animateWithDuration:0.4 animations:^{
             self.ju_imgView.frame=self->ju_imgMoveRect;
-            self->ju_imgMoveRect.origin.y+=20;
+//            self->ju_imgMoveRect.origin.y+=20;
             self.ju_imageMove.frame=self->ju_imgMoveRect;
-             self.ju_imageMove.originX=-self->ju_imgMoveOffset.x;
+//             self.ju_imageMove.originX=-self->ju_imgMoveOffset.x;
         }completion:^(BOOL finished) {
             self.ju_imgView.hidden=NO;
             self.ju_imageMove.hidden=YES;
@@ -341,29 +341,30 @@
     if (!self.ju_imageMove) {
         self.ju_imageMove=[[UIImageView alloc]init];
         self.ju_imageMove.frame=ju_imgMoveRect;
-        self.ju_imageMove.originX=-ju_imgMoveOffset.x;
         self.ju_imageMove.image=self.ju_imgView.image;
-        [self.superview addSubview:self.ju_imageMove];
+        [self addSubview:self.ju_imageMove];
     }
-    CGPoint panX = [pan translationInView:self];
-    CGFloat moveW,moveH;
-    if (panX.y>0) {
-         moveW=ju_imgMoveRect.size.width*(MAX(0.3,1-panX.y/300.0));
-         moveH=ju_imgMoveRect.size.height*(MAX(0.3,1-panX.y/300.0) );
+    if (ju_moveBeginPoint.y==0&&ju_moveBeginPoint.x==0) {
+        ju_moveBeginPoint=[pan locationInView:self];
+        ju_imgBeginPoint=[pan locationInView:_ju_imageMove];
+    }
+
+    CGPoint movePoint = [pan locationInView:self];
+    CGPoint currentPoint = CGPointMake(movePoint.x-ju_moveBeginPoint.x, movePoint.y-ju_moveBeginPoint.y);
+    CGFloat changeScale;
+    if (currentPoint.y>0) {
+         changeScale=MAX(1-(currentPoint.y)/400.0,0.3);
     }else{
-         moveW=ju_imgMoveRect.size.width*(MAX(0.8,1+panX.y/300.0) );
-         moveH=ju_imgMoveRect.size.height*(MAX(0.8,1+panX.y/300.0));
+         changeScale=MAX(1+(currentPoint.y)/400.0,0.8);;
     }
-    CGFloat moveY=ju_imgMoveRect.origin.y+panX.y;
-    CGFloat moveX=(-ju_imgMoveOffset.x)+panX.x+(ju_imgMoveRect.size.width-moveW)/2.0;
-
-
-    self.ju_imageMove.sizeW=moveW;
-    self.ju_imageMove.sizeH=moveH;
-    self.ju_imageMove.originY=moveY*1.4;//触摸点当前的y
-    self.ju_imageMove.originX=moveX ;
-//    self.ju_imageMove.originX=MIN(moveX, 100);
-
+    _ju_imageMove.transform=CGAffineTransformMakeScale(changeScale,changeScale);
+    CGFloat minusScale=1-changeScale;
+//    (ju_imgMoveRect.size.width-_ju_imageMove.sizeW)/ju_imgMoveRect.size.width;
+    CGFloat moveY=currentPoint.y+ju_imgMoveRect.origin.y+ju_imgBeginPoint.y*minusScale;
+    CGFloat moveX=currentPoint.x+ju_imgMoveRect.origin.x+ju_imgBeginPoint.x*minusScale;
+    NSLog(@"坐标X:%f y:%f 减少的宽 w:%f h:%f",moveX,moveY,minusScale,minusScale);
+    self.ju_imageMove.originY=moveY;
+    self.ju_imageMove.originX=moveX;
 
 }
 
