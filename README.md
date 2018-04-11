@@ -17,6 +17,9 @@
 
 ### JuImagesCollectView类为左右滑动容器
 ### JuZoomScaleView 单子图片容器，实现图片放大
+### JuAnimated 实现转场动画
+### JuProgressView 网络图片加载进度显示
+
 调用方法：初始化并获取当前小图的坐标
 ==
 -(UIViewController *)juSetImageVC:(NSIndexPath *)indexPath{<br> 
