@@ -51,7 +51,7 @@
         ju_doubleTap.numberOfTouchesRequired = 1;
         [self addGestureRecognizer:ju_doubleTap];
 
-        UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(juTouchTap)];
+        UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(juTouchTapHidder)];
         gesture.numberOfTapsRequired = 1;
         [self addGestureRecognizer:gesture];
         [gesture requireGestureRecognizerToFail:ju_doubleTap];
@@ -197,7 +197,8 @@
 }
 - (void) juShowAnimation{
 //    ju_imgView.transform = CGAffineTransformMakeScale(1, 1);///< 修复图片大小变为0
-     self.zoomScale=1.0;
+//     self.zoomScale=1.0;
+
     [UIView animateWithDuration:_isAnimate?0.3:0 animations:^{
         self.ju_imgView.frame = self->ju_originRect;
     }completion:^(BOOL finished) {
@@ -205,7 +206,7 @@
     }];
 }
 //隐藏
--(void)juTouchTap{
+-(void)juTouchTapHidder{
 
     if (_ju_isAlbum&&[self.ju_delegate respondsToSelector:@selector(juTapHidder)]) {
         [self.ju_delegate juTapHidder];
@@ -230,31 +231,27 @@
 
 //恢复到原始zoom
 - (void) juHiddenAnimation{
-
-    [UIView animateWithDuration:self.zoomScale==1.0?0:0.3 animations:^{
-        self.zoomScale=1.0;
-    } completion:^(BOOL finished) {
-        [self juAnimationChangSize];
-    }];
-}
-
-/**
- 消失缩放动画
- */
--(void)juAnimationChangSize{
-
     if (self.isAnimate) {
         [UIView animateWithDuration:0.3 animations:^{
+            self.contentSize=self->ju_originRect.size;
+            self.contentOffset=CGPointMake(0, 0);
             self.ju_imgView.frame =self->ju_smallRect;
-        } completion:^(BOOL finished) {
-            NSLog(@"完成");
         }];
     }
     if ([self.ju_delegate respondsToSelector:@selector(juTapHidder)]) {
         [self.ju_delegate juTapHidder];
     }
-
+//    [UIView animateWithDuration:self.zoomScale==1.0?0:0.3 animations:^{
+//        self.zoomScale=1.0;
+//    } completion:^(BOOL finished) {
+//        [self juAnimationChangSize];
+//    }];
 }
+
+/**
+ 消失缩放动画
+ */
+//-(void)juAnimationChangSize{}
 
 /**
  可实习长安保存图片
@@ -331,15 +328,16 @@
         if (isDrugMiss) {///< 达到消失临界值
             self.ju_imgView.frame= self.ju_imageMove.frame;
             self.ju_imgView.hidden=NO;
-            self.ju_imageMove.hidden=YES;
-            [self juTouchTap];
+            [self.ju_imageMove removeFromSuperview];
+            self.ju_imageMove=nil;
+            [self juTouchTapHidder];
         }else{///< 未达到消失值恢复原始值
             [UIView animateWithDuration:0.4 animations:^{
                 self.ju_imgView.frame=self->ju_imgMoveRect;
                 self.ju_imageMove.frame=self->ju_imgMoveRect;
             }completion:^(BOOL finished) {
                 self.ju_imgView.hidden=NO;
-                self.ju_imageMove.hidden=YES;
+                [self.ju_imageMove removeFromSuperview];
                 self.ju_imageMove=nil;
             }];
             if ([self.ju_delegate respondsToSelector:@selector(juChangeSacle:)]) {
@@ -348,15 +346,20 @@
         }
     }
 }
+-(UIImageView *)ju_imageMove{
+    if (!_ju_imageMove) {
+        _ju_imageMove=[[UIImageView alloc]init];
+        _ju_imageMove.image=self.ju_imgView.image;
+    }
+    return _ju_imageMove;
+}
 - (void)juTouchPan:(UIPanGestureRecognizer *)pan{
     if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStatePossible){
         isDruging=NO;
         return;
     }
-    if (!self.ju_imageMove) {
-        self.ju_imageMove=[[UIImageView alloc]init];
+    if (!self.ju_imageMove.superview) {
         self.ju_imageMove.frame=ju_imgMoveRect;
-        self.ju_imageMove.image=self.ju_imgView.image;
         [self addSubview:self.ju_imageMove];
     }
     self.ju_imgView.hidden=YES;
