@@ -10,6 +10,8 @@
 支持图片从小到大的动画
 
 ****具体使用方法
+
+
 ![Image text]https://github.com/jutewei/JuImageZoomScale/blob/master/JuImageZoomScale/show.gif
 JuImagesCollectView *ju_imgCollectView=[[JuImagesCollectView alloc]init];
 
