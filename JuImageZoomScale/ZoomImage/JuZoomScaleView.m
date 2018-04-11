@@ -232,20 +232,22 @@
 //恢复到原始zoom
 - (void) juHiddenAnimation{
     if (self.isAnimate) {
+//         CGRect frame= [self convertRect:self.ju_imgView.frame toView:self.superview];
+//         self.ju_imageMove.frame=frame;
+//        [self.superview addSubview:self.ju_imageMove];
+//        self.ju_imgView.hidden=YES;
         [UIView animateWithDuration:0.3 animations:^{
-            self.contentSize=self->ju_originRect.size;
             self.contentOffset=CGPointMake(0, 0);
+            self.contentSize=self->ju_originRect.size;
             self.ju_imgView.frame =self->ju_smallRect;
+        }completion:^(BOOL finished) {
+//            imaView.frame =self->ju_smallRect;
         }];
     }
     if ([self.ju_delegate respondsToSelector:@selector(juTapHidder)]) {
         [self.ju_delegate juTapHidder];
     }
-//    [UIView animateWithDuration:self.zoomScale==1.0?0:0.3 animations:^{
-//        self.zoomScale=1.0;
-//    } completion:^(BOOL finished) {
-//        [self juAnimationChangSize];
-//    }];
+
 }
 
 /**
@@ -349,12 +351,14 @@
 -(UIImageView *)ju_imageMove{
     if (!_ju_imageMove) {
         _ju_imageMove=[[UIImageView alloc]init];
+        _ju_imageMove.clipsToBounds = YES;
+        _ju_imageMove.contentMode   = UIViewContentModeScaleAspectFill;
         _ju_imageMove.image=self.ju_imgView.image;
     }
     return _ju_imageMove;
 }
 - (void)juTouchPan:(UIPanGestureRecognizer *)pan{
-    if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStatePossible){
+    if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStatePossible||pan.numberOfTouches != 1 ){
         isDruging=NO;
         return;
     }

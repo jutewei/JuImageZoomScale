@@ -54,8 +54,8 @@
     UICollectionViewCell *cell=[_ju_collectView cellForItemAtIndexPath:indexPath];
     CGRect frame= [cell.superview convertRect:cell.frame toView:cell.window];
     JuLargeImageVC *vc=[JuLargeImageVC initRect:^CGRect(id result) {
-        UICollectionViewCell *cell=[self.ju_collectView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:[result intValue] inSection:0]];
-        CGRect frame= [cell.superview convertRect:cell.frame toView:cell.window];
+        UICollectionViewCell *cell2=[self.ju_collectView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:[result intValue] inSection:0]];
+        CGRect frame= [cell2.superview convertRect:cell2.frame toView:cell2.window];
         return frame;
     }];
     [vc juSetImages:arrList currentIndex:indexPath.row startRect:frame];
