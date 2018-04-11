@@ -53,12 +53,11 @@
 #pragma mark 照片代理
 -(void)juTapHideBar{
     if (self.navigationController.toolbarHidden==YES) {
-        [self.navigationController setNavigationBarHidden:NO animated:NO];
-        [self.navigationController setToolbarHidden: NO animated: NO];
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+        [self.navigationController setToolbarHidden: NO animated: YES];
     }else{
-        [self.navigationController setToolbarHidden: YES animated: NO];
-        [self.navigationController setNavigationBarHidden:YES animated:NO];
-
+        [self.navigationController setToolbarHidden: YES animated: YES];
+        [self.navigationController setNavigationBarHidden:YES animated:YES];
     }
     isHidderStatus=self.navigationController.toolbarHidden;
     [self setNeedsStatusBarAppearanceUpdate];
