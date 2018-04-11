@@ -9,7 +9,6 @@
 #import "ViewController.h"
 #import "JuAlbumPreviewVC.h"
 #import "JuLargeImageVC.h"
-#import "JuNavigationController.h"
 
 @interface ViewController (){
    
@@ -32,56 +31,43 @@
    
 }
 - (IBAction)juTouchAlbum:(id)sender {
-    
     JuAlbumPreviewVC *vc=[[JuAlbumPreviewVC alloc]init];
     [vc juSetImages:@[[UIImage imageNamed:@"3.jpg"],[UIImage imageNamed:@"1.jpg"],@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/03/16-49-060144-1442918276.jpeg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-37-080036-1235239760.jpg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-15-220471701481425.jpg"] currentIndex:0];
     [self.navigationController pushViewController:vc animated:YES];
 }
 - (IBAction)juTouchLarge:(id)sender {
     JuLargeImageVC *vc=[JuLargeImageVC initView:self.navigationController.view endRect:^CGRect(id result) {
-        return CGRectMake(100, 150, 100, 100);
+        return CGRectMake(100, 150, 180, 150);
     }];
-     JuNavigationController *NavVC=[[JuNavigationController alloc]initWithRootViewController:vc];
+//     JuNavigationController *NavVC=[[JuNavigationController alloc]initWithRootViewController:vc];
     [vc juSetImages:@[[UIImage imageNamed:@"3.jpg"],[UIImage imageNamed:@"1.jpg"],@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/03/16-49-060144-1442918276.jpeg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-37-080036-1235239760.jpg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-15-220471701481425.jpg"] currentIndex:0 startRect:CGRectMake(100, 200, 100, 100)];
-    [self presentViewController:NavVC animated:YES completion:nil];
+    [self presentViewController:vc animated:YES completion:nil];
 }
 
 -(void)setRegisterPreviewingView:(UIView *)view{
-
         //给cell注册3DTouch的peek（预览）和pop功能
     [self registerForPreviewingWithDelegate:self sourceView:ju_btnTouch];
 
 }
 -(UIViewController *)shPreviewVC:(id <UIViewControllerPreviewing>)previewingContext{
 
-
     JuLargeImageVC *vc=[JuLargeImageVC initView:self.navigationController.view endRect:^CGRect(id result) {
-        return CGRectMake(100, 150, 100, 100);
+        return CGRectMake(100, 150, 180, 150);
     }];
-    JuNavigationController *NavVC=[[JuNavigationController alloc]initWithRootViewController:vc];
     [vc juSetImages:@[[UIImage imageNamed:@"3.jpg"],[UIImage imageNamed:@"1.jpg"],@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/03/16-49-060144-1442918276.jpeg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-37-080036-1235239760.jpg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-15-220471701481425.jpg"] currentIndex:0 startRect:CGRectMake(100, 200, 100, 100)];
 
-    return NavVC;
+    return vc;
 }
 //pop（按用点力进入视图）
 - (void)previewingContext:(id <UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
-
-    [self showViewController:viewControllerToCommit sender:self];
+    [self presentViewController:viewControllerToCommit animated:YES completion:nil];
+//    [self showViewController:viewControllerToCommit sender:self];
 }
 //peek(预览)
 - (nullable UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location
 {
     //获取按压的cell所在行，[previewingContext sourceView]就是按压的那个视图
-    //设定预览的界面
-    UIViewController *vc = [self shPreviewVC:previewingContext];
-    vc.hidesBottomBarWhenPushed = YES;
-    //    webViewVC.preferredContentSize = CGSizeMake(0.0f,0.0f);
-//    JuBaseNavigationVC *navc=[JuBaseNavigationVC shBasicNation:vc];
-    //调整不被虚化的范围，按压的那个cell不被虚化（轻轻按压时周边会被虚化，再少用力展示预览，再加力跳页至设定界面）
-    //    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width,120);
-    //    previewingContext.sourceRect = rect;
-    //返回预览界面
-    return vc;
+    return [self shPreviewVC:previewingContext];
 }
 
 - (void)didReceiveMemoryWarning {

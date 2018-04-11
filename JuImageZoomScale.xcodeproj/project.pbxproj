@@ -47,7 +47,6 @@
 		EBCC410F2074D043001DA272 /* JuProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = EBCC41012074D043001DA272 /* JuProgressView.m */; };
 		EBCC41102074D043001DA272 /* JuAlbumPreviewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EBCC41072074D043001DA272 /* JuAlbumPreviewVC.m */; };
 		EBD884AD207B6E4B00B58B04 /* JuAnimated.m in Sources */ = {isa = PBXBuildFile; fileRef = EBD884AC207B6E4B00B58B04 /* JuAnimated.m */; };
-		EBD884B0207B6EEB00B58B04 /* JuNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = EBD884AF207B6EEB00B58B04 /* JuNavigationController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -129,8 +128,6 @@
 		EBCC41092074D043001DA272 /* JuImageObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JuImageObject.h; sourceTree = "<group>"; };
 		EBD884AB207B6E4B00B58B04 /* JuAnimated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JuAnimated.h; sourceTree = "<group>"; };
 		EBD884AC207B6E4B00B58B04 /* JuAnimated.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JuAnimated.m; sourceTree = "<group>"; };
-		EBD884AE207B6EEB00B58B04 /* JuNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JuNavigationController.h; sourceTree = "<group>"; };
-		EBD884AF207B6EEB00B58B04 /* JuNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JuNavigationController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -256,8 +253,6 @@
 			isa = PBXGroup;
 			children = (
 				EBCC41022074D043001DA272 /* JuDefine.h */,
-				EBD884AE207B6EEB00B58B04 /* JuNavigationController.h */,
-				EBD884AF207B6EEB00B58B04 /* JuNavigationController.m */,
 				EBCC41062074D043001DA272 /* JuProgressView.h */,
 				EBCC41012074D043001DA272 /* JuProgressView.m */,
 				EBCC41032074D043001DA272 /* JuZoomScaleView.h */,
@@ -380,7 +375,6 @@
 				EBCC40E82074D004001DA272 /* MKAnnotationView+WebCache.m in Sources */,
 				EBCC40A420746BC5001DA272 /* UIView+JuLayout.m in Sources */,
 				EBCC410A2074D043001DA272 /* JuImagesCollectView.m in Sources */,
-				EBD884B0207B6EEB00B58B04 /* JuNavigationController.m in Sources */,
 				EBCC40EB2074D004001DA272 /* UIImageView+HighlightedWebCache.m in Sources */,
 				EBCC40F72074D004001DA272 /* UIImage+Cropping.m in Sources */,
 				EBCC40F12074D004001DA272 /* SDImageCache.m in Sources */,

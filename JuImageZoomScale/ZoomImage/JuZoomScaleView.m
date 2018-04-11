@@ -19,7 +19,7 @@
     CGRect ju_smallRect;
     BOOL isFinishLoad;
     dispatch_queue_t ju_queueFullImage;
-    BOOL isDruging;
+    BOOL isDruging,isDrugMiss;
     CGRect ju_imgMoveRect;
     CGPoint ju_moveBeginPoint,ju_imgBeginPoint;
 }
@@ -66,6 +66,9 @@
         ju_queueFullImage=dispatch_queue_create("queue.getFullImage", DISPATCH_QUEUE_SERIAL);///< 串行队列
         [self shSetImageView];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(juStatusBarOrientationChange:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+        if (@available(iOS 11.0, *)) {
+            self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        }
     }
     return self;
 }
@@ -297,7 +300,6 @@
     if (imgFrame.size.width <= boundsSize.width){
         centerPoint.x = boundsSize.width/2;
     }
-
     // center vertically
     if (imgFrame.size.height <= boundsSize.height){
         centerPoint.y = boundsSize.height/2;
@@ -307,43 +309,52 @@
 }
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     CGFloat  scrollNewY = scrollView.contentOffset.y;
-    if (scrollNewY <-50&&self.dragging){
+    if (scrollNewY <0&&self.dragging&&!_ju_isAlbum){
         isDruging=YES;
         ju_imgMoveRect=self.ju_imgView.frame;
     }
     if (isDruging) {
-        self.ju_imgView.hidden=YES;
         [self juTouchPan:scrollView.panGestureRecognizer];
-        self.ju_imageMove.hidden=NO;
     }
 }
 //结束拖拽
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
-
     if (isDruging) {
-         isDruging=NO;
+        isDruging=NO;
         ju_moveBeginPoint=CGPointMake(0, 0);
-        [UIView animateWithDuration:0.4 animations:^{
-            self.ju_imgView.frame=self->ju_imgMoveRect;
-//            self->ju_imgMoveRect.origin.y+=20;
-            self.ju_imageMove.frame=self->ju_imgMoveRect;
-//             self.ju_imageMove.originX=-self->ju_imgMoveOffset.x;
-        }completion:^(BOOL finished) {
+        if (isDrugMiss) {
+            self.ju_imgView.frame= self.ju_imageMove.frame;
             self.ju_imgView.hidden=NO;
             self.ju_imageMove.hidden=YES;
-             self.ju_imageMove=nil;
-        }];
+            [self juTouchTap];
+        }else{
+            [UIView animateWithDuration:0.4 animations:^{
+                self.ju_imgView.frame=self->ju_imgMoveRect;
+                self.ju_imageMove.frame=self->ju_imgMoveRect;
+            }completion:^(BOOL finished) {
+                self.ju_imgView.hidden=NO;
+                self.ju_imageMove.hidden=YES;
+                self.ju_imageMove=nil;
+            }];
+            if ([self.ju_delegate respondsToSelector:@selector(juChangeSacle:)]) {
+                [self.ju_delegate juChangeSacle:!isDrugMiss];
+            }
+        }
     }
-
 }
 - (void)juTouchPan:(UIPanGestureRecognizer *)pan{
-
+    if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStatePossible){
+        isDruging=NO;
+        return;
+    }
     if (!self.ju_imageMove) {
         self.ju_imageMove=[[UIImageView alloc]init];
         self.ju_imageMove.frame=ju_imgMoveRect;
         self.ju_imageMove.image=self.ju_imgView.image;
         [self addSubview:self.ju_imageMove];
     }
+    self.ju_imgView.hidden=YES;
+    self.ju_imageMove.hidden=NO;
     if (ju_moveBeginPoint.y==0&&ju_moveBeginPoint.x==0) {
         ju_moveBeginPoint=[pan locationInView:self];
         ju_imgBeginPoint=[pan locationInView:_ju_imageMove];
@@ -352,11 +363,13 @@
     CGPoint movePoint = [pan locationInView:self];
     CGPoint currentPoint = CGPointMake(movePoint.x-ju_moveBeginPoint.x, movePoint.y-ju_moveBeginPoint.y);
     CGFloat changeScale;
+
     if (currentPoint.y>0) {
-         changeScale=MAX(1-(currentPoint.y)/400.0,0.3);
+         changeScale=MAX(1-(currentPoint.y)/300.0,0.3);
     }else{
-         changeScale=MAX(1+(currentPoint.y)/400.0,0.8);;
+         changeScale=MAX(1+(currentPoint.y)/300.0,0.9);
     }
+    isDrugMiss=changeScale<0.9;
     _ju_imageMove.transform=CGAffineTransformMakeScale(changeScale,changeScale);
     CGFloat minusScale=1-changeScale;
 //    (ju_imgMoveRect.size.width-_ju_imageMove.sizeW)/ju_imgMoveRect.size.width;
@@ -366,6 +379,9 @@
     self.ju_imageMove.originY=moveY;
     self.ju_imageMove.originX=moveX;
 
+    if ([self.ju_delegate respondsToSelector:@selector(juChangeSacle:)]) {
+        [self.ju_delegate juChangeSacle:changeScale];
+    }
 }
 
 - (void)dealloc{

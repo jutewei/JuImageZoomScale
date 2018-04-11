@@ -25,18 +25,26 @@
 //    ju_scaleView.frame=self.window.bounds;
 }
 -(CGRect)juCurrentRect{
-    if ([self.ju_delegate respondsToSelector:@selector(juCurrentRect)]) {
-        return [self.ju_delegate juCurrentRect];
+    if ([self.ju_delegate respondsToSelector:@selector(juCurrentCellRect)]) {
+        return [self.ju_delegate juCurrentCellRect];
     }
     return CGRectZero;
 }
 -(void)juTapHidder{
-    if ([self.ju_delegate respondsToSelector:@selector(juTapHidder)]) {
-        return [self.ju_delegate juTapHidder];
+    if ([self.ju_delegate respondsToSelector:@selector(juTapCellHidder)]) {
+        return [self.ju_delegate juTapCellHidder];
     }
 }
+-(void)juChangeSacle:(CGFloat)scale{
+    if ([self.ju_delegate respondsToSelector:@selector(juChangeCellSacle:)]) {
+        return [self.ju_delegate juChangeCellSacle:scale];
+    }
+}
+-(void)juSetContentHidden:(BOOL)isHidden{
+    ju_scaleView.hidden=isHidden;
+}
 -(void)juSetImage:(id)imageData originalFrame:(CGRect)frame{
-
+    ju_scaleView.hidden=NO;
     [ju_scaleView setImage:imageData originalRect:frame];
     ju_scaleView.ju_isAlbum=_ju_isAlbum;
 }

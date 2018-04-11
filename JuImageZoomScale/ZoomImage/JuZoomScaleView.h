@@ -15,6 +15,7 @@
  */
 -(CGRect)juCurrentRect;
 -(void)juTapHidder;
+-(void)juChangeSacle:(CGFloat)scale;
 @end
 
 @interface JuZoomScaleView : UIScrollView

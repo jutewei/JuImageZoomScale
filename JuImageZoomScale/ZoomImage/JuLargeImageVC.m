@@ -9,11 +9,11 @@
 #import "JuLargeImageVC.h"
 #import "JuImagesCollectView.h"
 #import "UIView+JuLayout.h"
-
-@interface JuLargeImageVC (){
+#import "JuAnimated.h"
+@interface JuLargeImageVC ()<UIViewControllerTransitioningDelegate>{
      JuImagesCollectView *ju_imgCollectView;
 }
-
+@property (nonatomic,strong) JuAnimated *ju_animator;
 @end
 
 @implementation JuLargeImageVC
@@ -21,9 +21,17 @@
 -(instancetype)init{
     self=[super init];
     if (self) {
+        self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+        self.transitioningDelegate = self;//转场管理者
         ju_imgCollectView=[[JuImagesCollectView alloc]init];
     }
     return self;
+}
+- (JuAnimated *)ju_animator {
+    if (!_ju_animator) {
+        _ju_animator = [[JuAnimated alloc] init];
+    }
+    return _ju_animator;
 }
 +(instancetype)initView:(UIView *)view{
     return [self initView:view endRect:nil];
@@ -46,11 +54,7 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
-    if (@available(iOS 11.0, *)) {
-        ju_imgCollectView.ju_collectView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-    }else{
-        self.automaticallyAdjustsScrollViewInsets=NO;
-    }
+    self.automaticallyAdjustsScrollViewInsets=NO;
     ju_imgCollectView.ju_handle = self.ju_handle;
     [self.view addSubview:ju_imgCollectView];
     ju_imgCollectView.juEdge(UIEdgeInsetsMake(0, 0, 0, 0));
@@ -59,6 +63,16 @@
         [weakSelf dismissViewControllerAnimated:NO completion:nil];
     };
     // Do any additional setup after loading the view.
+}
+#pragma mark - UIViewControllerTransitioningDelegate
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
+    self.ju_animator.presented = YES;
+    return self.ju_animator;
+}
+
+- (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed{
+    self.ju_animator.presented = NO;
+    return self.ju_animator;
 }
 -(void)juSetImages:(NSArray *)arrList currentIndex:(NSInteger)index startRect:(CGRect)frame{
     [ju_imgCollectView juSetImages:arrList currentIndex:index rect:frame];

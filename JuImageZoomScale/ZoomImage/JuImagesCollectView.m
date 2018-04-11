@@ -11,10 +11,11 @@
 #import "JuImagesCollectCell.h"
 #import "JuZoomScaleView.h"
 
-@interface JuImagesCollectView()<JuImageZoomScaleDelegate>{
+@interface JuImagesCollectView()<JuImagesCollectCellDelegate>{
     NSInteger  ju_currentIndex;
     CGFloat ju_itemWidth;
     CGRect ju_originalFrame;
+    BOOL isHidderCell;
 }
 
 @end
@@ -77,15 +78,16 @@
     cell.ju_delegate=self;
     cell.ju_isAlbum=_ju_isAlbum;
     [cell juSetImage:_ju_ArrList[indexPath.row] originalFrame:ju_originalFrame];
+    [cell juSetContentHidden:isHidderCell&&ju_currentIndex!=indexPath.row];
     return cell;
 }
--(CGRect)juCurrentRect{
+-(CGRect)juCurrentCellRect{
     if (self.ju_handle) {
         return  self.ju_handle(nil);
     }
     return CGRectZero;
 }
--(void)juTapHidder{
+-(void)juTapCellHidder{
     if (_ju_isAlbum) {
         if (self.ju_completion) {
             self.ju_completion();
@@ -99,6 +101,32 @@
             self.ju_completion();
         }
     }];
+}
+-(void)juChangeCellSacle:(CGFloat)scale{
+    isHidderCell=!scale;
+    if (scale==0) {
+        [self juTapCellHidder];
+    }else if (scale==1){
+        [UIView animateWithDuration:0.3 animations:^{
+            self.ju_collectView.backgroundColor=[UIColor colorWithWhite:0 alpha:1];
+        }completion:^(BOOL finished) {
+            [self juSetHidder:NO];
+        }];
+    }else{
+        self.ju_collectView.backgroundColor=[UIColor colorWithWhite:0 alpha:scale];
+        [self juSetHidder:YES];
+    }
+}
+
+-(void)juSetHidder:(BOOL)isHide{
+    for (NSIndexPath *indexPath in self.ju_collectView.indexPathsForVisibleItems) {
+        JuImagesCollectCell *cell=(id)[self.ju_collectView cellForItemAtIndexPath:indexPath];
+        if (ju_currentIndex==indexPath.row) {
+            [cell juSetContentHidden:NO];
+        }else{
+            [cell juSetContentHidden:isHide];
+        }
+    }
 }
 #pragma mark 拖动时赋值
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
