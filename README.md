@@ -13,8 +13,8 @@
 支持向下拖拽变小并隐藏
 
 支持3D-touch显示
-****具体使用方法
-#初始化获取当前小图的坐标
+
+# 初始化获取当前小图的坐标
 -(UIViewController *)juSetImageVC:(NSIndexPath *)indexPath{
     UICollectionViewCell *cell=[_ju_collectView cellForItemAtIndexPath:indexPath];
     CGRect frame= [cell.superview convertRect:cell.frame toView:cell.window];
