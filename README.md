@@ -1,6 +1,6 @@
 # JuImageZoomScale
 ![Image text](https://github.com/jutewei/JuImageZoomScale/blob/master/JuImageZoomScale/show.gif)
-图片大图预览，支持双击放大，单击隐藏，长按保存。捏合放大缩小。
+# 图片大图预览，支持双击放大，单击隐藏，长按保存。捏合放大缩小。
 
 支持手机横竖屏自动适配。
 
