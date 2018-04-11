@@ -9,9 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "JuDefine.h"
 @interface JuLargeImageVC : UIViewController<UINavigationControllerDelegate>
-+(instancetype)initView:(UIView *)view;
 
-+(instancetype)initView:(UIView *)view endRect:(JuHandle)handle;
++(instancetype)initRect:(JuHandle)handle;
 
 @property (nonatomic,copy) JuHandle ju_handle;
 -(void)juSetImages:(NSArray *)arrList currentIndex:(NSInteger)index startRect:(CGRect)frame;

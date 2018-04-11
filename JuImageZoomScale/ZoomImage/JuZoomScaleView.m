@@ -65,6 +65,7 @@
         self.minimumZoomScale               = 1.0;
         ju_queueFullImage=dispatch_queue_create("queue.getFullImage", DISPATCH_QUEUE_SERIAL);///< 串行队列
         [self shSetImageView];
+//        屏幕旋转时重新布局
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(juStatusBarOrientationChange:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
         if (@available(iOS 11.0, *)) {
             self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
@@ -93,7 +94,6 @@
     if (ju_imgView.image) {
         [self setImage:ju_imgView.image];
     }
-//      self.frame=self.window.bounds;
 }
 -(void)shSetImageView{
     ju_imgView               = [[UIImageView alloc] init];
@@ -239,7 +239,7 @@
 }
 
 /**
- 缩放动画
+ 消失缩放动画
  */
 -(void)juAnimationChangSize{
 
@@ -256,9 +256,16 @@
 
 }
 
+/**
+ 可实习长安保存图片
+ */
 -(void)juTouchLong:(id)sender{
     NSLog(@"长按");
 }
+
+/**
+ 双击缩放
+ */
 -(void)juDoubleTap:(UIGestureRecognizer *)sender{
     if (!isFinishLoad) return;
     UIScrollView *scr=(UIScrollView *)sender.view;
@@ -289,13 +296,10 @@
 }
 
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView{
-
     CGSize boundsSize = scrollView.bounds.size;
     CGRect imgFrame = ju_imgView.frame;
     CGSize contentSize = scrollView.contentSize;
-
     CGPoint centerPoint = CGPointMake(contentSize.width/2, contentSize.height/2);
-
     // center horizontally
     if (imgFrame.size.width <= boundsSize.width){
         centerPoint.x = boundsSize.width/2;
@@ -307,6 +311,7 @@
 
     ju_imgView.center = centerPoint;
 }
+/**判断是否向下拖拽*/
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     CGFloat  scrollNewY = scrollView.contentOffset.y;
     if (scrollNewY <0&&self.dragging&&!_ju_isAlbum){
@@ -323,12 +328,12 @@
     if (isDruging) {
         isDruging=NO;
         ju_moveBeginPoint=CGPointMake(0, 0);
-        if (isDrugMiss) {
+        if (isDrugMiss) {///< 达到消失临界值
             self.ju_imgView.frame= self.ju_imageMove.frame;
             self.ju_imgView.hidden=NO;
             self.ju_imageMove.hidden=YES;
             [self juTouchTap];
-        }else{
+        }else{///< 未达到消失值恢复原始值
             [UIView animateWithDuration:0.4 animations:^{
                 self.ju_imgView.frame=self->ju_imgMoveRect;
                 self.ju_imageMove.frame=self->ju_imgMoveRect;
@@ -374,9 +379,10 @@
     _ju_imageMove.transform=CGAffineTransformMakeScale(changeScale,changeScale);
     CGFloat minusScale=1-changeScale;
 //    (ju_imgMoveRect.size.width-_ju_imageMove.sizeW)/ju_imgMoveRect.size.width;
+//    移动坐标由原始坐标和移动坐标已经缩放相对尺寸坐标
     CGFloat moveY=currentPoint.y+ju_imgMoveRect.origin.y+ju_imgBeginPoint.y*minusScale;
     CGFloat moveX=currentPoint.x+ju_imgMoveRect.origin.x+ju_imgBeginPoint.x*minusScale;
-//    NSLog(@"坐标X:%f y:%f 减少的宽 w:%f h:%f",moveX,moveY,minusScale,minusScale);
+
     self.ju_imageMove.originY=moveY;
     self.ju_imageMove.originX=moveX;
 

@@ -16,14 +16,11 @@
         ju_scaleView=[[JuZoomScaleView alloc]init];
         ju_scaleView.ju_delegate=self;
         [self.contentView addSubview:ju_scaleView];
+        ju_scaleView.juEdge(UIEdgeInsetsMake(0, 0, 0, 20));
     }
     return self;
 }
--(void)didMoveToWindow{
-    [super didMoveToWindow];
-    ju_scaleView.juEdge(UIEdgeInsetsMake(0, 0, 0, 20));
-//    ju_scaleView.frame=self.window.bounds;
-}
+
 -(CGRect)juCurrentRect{
     if ([self.ju_delegate respondsToSelector:@selector(juCurrentCellRect)]) {
         return [self.ju_delegate juCurrentCellRect];

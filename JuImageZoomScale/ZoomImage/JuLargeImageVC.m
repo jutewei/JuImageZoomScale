@@ -33,12 +33,8 @@
     }
     return _ju_animator;
 }
-+(instancetype)initView:(UIView *)view{
-    return [self initView:view endRect:nil];
-}
 
-
-+(instancetype)initView:(UIView *)view endRect:(JuHandle)handle{
++(instancetype)initRect:(JuHandle)handle{
     JuLargeImageVC *vc=[[JuLargeImageVC alloc]init];
     vc.ju_handle =  handle;
     return vc;

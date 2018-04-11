@@ -53,7 +53,7 @@
 -(UIViewController *)juSetImageVC:(NSIndexPath *)indexPath{
     UICollectionViewCell *cell=[_ju_collectView cellForItemAtIndexPath:indexPath];
     CGRect frame= [cell.superview convertRect:cell.frame toView:cell.window];
-    JuLargeImageVC *vc=[JuLargeImageVC initView:self.navigationController.view endRect:^CGRect(id result) {
+    JuLargeImageVC *vc=[JuLargeImageVC initRect:^CGRect(id result) {
         UICollectionViewCell *cell=[self.ju_collectView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:[result intValue] inSection:0]];
         CGRect frame= [cell.superview convertRect:cell.frame toView:cell.window];
         return frame;
