@@ -9,11 +9,11 @@
 #import "ViewController.h"
 #import "JuAlbumPreviewVC.h"
 #import "JuLargeImageVC.h"
-
+#import "CollectionViewCell.h"
 @interface ViewController (){
-   
-    __weak IBOutlet UIButton *ju_btnTouch;
+    NSArray *arrList;
 }
+@property (strong, nonatomic) IBOutlet UICollectionView *ju_collectView;
 
 @end
 
@@ -21,8 +21,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.registerPreviewingView=ju_btnTouch;
-
+    arrList=@[[UIImage imageNamed:@"3.jpg"],[UIImage imageNamed:@"1.jpg"],@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/03/16-49-060144-1442918276.jpeg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-37-080036-1235239760.jpg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-15-220471701481425.jpg"];
+    [_ju_collectView registerClass:[CollectionViewCell class] forCellWithReuseIdentifier:@"CollectionViewCell"];
     // Do any additional setup after loading the view, typically from a nib.
 }
 -(void)viewDidAppear:(BOOL)animated{
@@ -30,42 +30,48 @@
 //      viewC.ju_ArrList=@[@"3.jpg",@"1.jpg"];
    
 }
-- (IBAction)juTouchAlbum:(id)sender {
-    JuAlbumPreviewVC *vc=[[JuAlbumPreviewVC alloc]init];
-    [vc juSetImages:@[[UIImage imageNamed:@"3.jpg"],[UIImage imageNamed:@"1.jpg"],@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/03/16-49-060144-1442918276.jpeg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-37-080036-1235239760.jpg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-15-220471701481425.jpg"] currentIndex:0];
-    [self.navigationController pushViewController:vc animated:YES];
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return arrList.count;
 }
-- (IBAction)juTouchLarge:(id)sender {
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    CollectionViewCell *cell=[collectionView dequeueReusableCellWithReuseIdentifier:@"CollectionViewCell" forIndexPath:indexPath];
+    [cell juSetImage:arrList[indexPath.row]];
+    [self registerForPreviewingWithDelegate:self sourceView:cell];
+    return cell;
+}
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    if (indexPath.row>3) {
+        JuAlbumPreviewVC *vc=[[JuAlbumPreviewVC alloc]init];
+        [vc juSetImages:arrList currentIndex:indexPath.row];
+        [self.navigationController pushViewController:vc animated:YES];
+    }else{
+        JuLargeImageVC *vc=(id)[self juSetImageVC:indexPath];
+        [self presentViewController:vc animated:YES completion:nil];
+    }
+}
+
+-(UIViewController *)juSetImageVC:(NSIndexPath *)indexPath{
+    UICollectionViewCell *cell=[_ju_collectView cellForItemAtIndexPath:indexPath];
+    CGRect frame= [cell.superview convertRect:cell.frame toView:cell.window];
     JuLargeImageVC *vc=[JuLargeImageVC initView:self.navigationController.view endRect:^CGRect(id result) {
-        return CGRectMake(100, 150, 180, 150);
+        UICollectionViewCell *cell=[self.ju_collectView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:[result intValue] inSection:0]];
+        CGRect frame= [cell.superview convertRect:cell.frame toView:cell.window];
+        return frame;
     }];
-//     JuNavigationController *NavVC=[[JuNavigationController alloc]initWithRootViewController:vc];
-    [vc juSetImages:@[[UIImage imageNamed:@"3.jpg"],[UIImage imageNamed:@"1.jpg"],@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/03/16-49-060144-1442918276.jpeg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-37-080036-1235239760.jpg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-15-220471701481425.jpg"] currentIndex:0 startRect:CGRectMake(100, 200, 100, 100)];
-    [self presentViewController:vc animated:YES completion:nil];
-}
-
--(void)setRegisterPreviewingView:(UIView *)view{
-        //给cell注册3DTouch的peek（预览）和pop功能
-    [self registerForPreviewingWithDelegate:self sourceView:ju_btnTouch];
-
+    [vc juSetImages:arrList currentIndex:indexPath.row startRect:frame];
+    return vc;
 }
 -(UIViewController *)shPreviewVC:(id <UIViewControllerPreviewing>)previewingContext{
-
-    JuLargeImageVC *vc=[JuLargeImageVC initView:self.navigationController.view endRect:^CGRect(id result) {
-        return CGRectMake(100, 150, 180, 150);
-    }];
-    [vc juSetImages:@[[UIImage imageNamed:@"3.jpg"],[UIImage imageNamed:@"1.jpg"],@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/03/16-49-060144-1442918276.jpeg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-37-080036-1235239760.jpg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-15-220471701481425.jpg"] currentIndex:0 startRect:CGRectMake(100, 200, 100, 100)];
-
-    return vc;
+    UICollectionViewCell *cell=(id)[previewingContext sourceView];
+    NSIndexPath *indexPath = [_ju_collectView indexPathForCell:cell];
+    return [self juSetImageVC:indexPath];
 }
 //pop（按用点力进入视图）
 - (void)previewingContext:(id <UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
     [self presentViewController:viewControllerToCommit animated:YES completion:nil];
-//    [self showViewController:viewControllerToCommit sender:self];
 }
 //peek(预览)
-- (nullable UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location
-{
+- (nullable UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location{
     //获取按压的cell所在行，[previewingContext sourceView]就是按压的那个视图
     return [self shPreviewVC:previewingContext];
 }

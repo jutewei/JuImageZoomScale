@@ -41,7 +41,6 @@
 +(instancetype)initView:(UIView *)view endRect:(JuHandle)handle{
     JuLargeImageVC *vc=[[JuLargeImageVC alloc]init];
     vc.ju_handle =  handle;
-//    [view addSubview:vc.view];
     return vc;
 }
 -(void)viewWillAppear:(BOOL)animated{

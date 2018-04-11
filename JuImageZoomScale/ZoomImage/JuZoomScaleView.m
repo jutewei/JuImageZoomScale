@@ -242,18 +242,18 @@
  缩放动画
  */
 -(void)juAnimationChangSize{
+
+    if (self.isAnimate) {
+        [UIView animateWithDuration:0.3 animations:^{
+            self.ju_imgView.frame =self->ju_smallRect;
+        } completion:^(BOOL finished) {
+            NSLog(@"完成");
+        }];
+    }
     if ([self.ju_delegate respondsToSelector:@selector(juTapHidder)]) {
         [self.ju_delegate juTapHidder];
     }
-    if (!self.isAnimate) {
-        return;
-    }
 
-    [UIView animateWithDuration:0.3 animations:^{
-        self.ju_imgView.frame =self->ju_smallRect;
-    } completion:^(BOOL finished) {
-
-    }];
 }
 
 -(void)juTouchLong:(id)sender{
@@ -315,6 +315,7 @@
     }
     if (isDruging) {
         [self juTouchPan:scrollView.panGestureRecognizer];
+
     }
 }
 //结束拖拽
@@ -375,7 +376,7 @@
 //    (ju_imgMoveRect.size.width-_ju_imageMove.sizeW)/ju_imgMoveRect.size.width;
     CGFloat moveY=currentPoint.y+ju_imgMoveRect.origin.y+ju_imgBeginPoint.y*minusScale;
     CGFloat moveX=currentPoint.x+ju_imgMoveRect.origin.x+ju_imgBeginPoint.x*minusScale;
-    NSLog(@"坐标X:%f y:%f 减少的宽 w:%f h:%f",moveX,moveY,minusScale,minusScale);
+//    NSLog(@"坐标X:%f y:%f 减少的宽 w:%f h:%f",moveX,moveY,minusScale,minusScale);
     self.ju_imageMove.originY=moveY;
     self.ju_imageMove.originX=moveX;
 

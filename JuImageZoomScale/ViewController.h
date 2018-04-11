@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController<UIViewControllerPreviewingDelegate>
+@interface ViewController : UIViewController<UIViewControllerPreviewingDelegate,UICollectionViewDelegate,UICollectionViewDataSource>
 
 
 @end

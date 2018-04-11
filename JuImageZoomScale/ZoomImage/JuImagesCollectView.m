@@ -15,6 +15,7 @@
     NSInteger  ju_currentIndex;
     CGFloat ju_itemWidth;
     CGRect ju_originalFrame;
+    NSInteger ju_startIndex;
     BOOL isHidderCell;
 }
 
@@ -58,6 +59,7 @@
 }
 -(void)juSetImages:(NSArray *)arrList currentIndex:(NSInteger)index rect:(CGRect)frame{
     ju_currentIndex=index;
+    ju_startIndex=index;
     ju_originalFrame=frame;
     self.ju_ArrList=arrList;
 }
@@ -77,13 +79,13 @@
     JuImagesCollectCell *cell=[collectionView dequeueReusableCellWithReuseIdentifier:@"JuImagesCollectCell" forIndexPath:indexPath];
     cell.ju_delegate=self;
     cell.ju_isAlbum=_ju_isAlbum;
-    [cell juSetImage:_ju_ArrList[indexPath.row] originalFrame:ju_originalFrame];
+    [cell juSetImage:_ju_ArrList[indexPath.row] originalFrame:ju_startIndex==indexPath.row?ju_originalFrame:CGRectZero];
     [cell juSetContentHidden:isHidderCell&&ju_currentIndex!=indexPath.row];
     return cell;
 }
 -(CGRect)juCurrentCellRect{
     if (self.ju_handle) {
-        return  self.ju_handle(nil);
+        return  self.ju_handle(@(ju_currentIndex));
     }
     return CGRectZero;
 }
@@ -103,30 +105,36 @@
     }];
 }
 -(void)juChangeCellSacle:(CGFloat)scale{
-    isHidderCell=!scale;
-    if (scale==0) {
-        [self juTapCellHidder];
-    }else if (scale==1){
+    BOOL hidder=scale<1;
+    if (scale==1) {
         [UIView animateWithDuration:0.3 animations:^{
             self.ju_collectView.backgroundColor=[UIColor colorWithWhite:0 alpha:1];
         }completion:^(BOOL finished) {
-            [self juSetHidder:NO];
+            [self juSetHidder:hidder];
         }];
     }else{
-        self.ju_collectView.backgroundColor=[UIColor colorWithWhite:0 alpha:scale];
-        [self juSetHidder:YES];
+        if (scale==0) {
+            [self juTapCellHidder];
+        }else{
+            self.ju_collectView.backgroundColor=[UIColor colorWithWhite:0 alpha:scale];
+        }
+        [self juSetHidder:hidder];
     }
+
 }
 
 -(void)juSetHidder:(BOOL)isHide{
-    for (NSIndexPath *indexPath in self.ju_collectView.indexPathsForVisibleItems) {
-        JuImagesCollectCell *cell=(id)[self.ju_collectView cellForItemAtIndexPath:indexPath];
-        if (ju_currentIndex==indexPath.row) {
-            [cell juSetContentHidden:NO];
-        }else{
-            [cell juSetContentHidden:isHide];
+    if (isHide!=isHidderCell) {
+        for (NSIndexPath *indexPath in self.ju_collectView.indexPathsForVisibleItems) {
+            JuImagesCollectCell *cell=(id)[self.ju_collectView cellForItemAtIndexPath:indexPath];
+            if (ju_currentIndex==indexPath.row) {
+                [cell juSetContentHidden:NO];
+            }else{
+                [cell juSetContentHidden:isHide];
+            }
         }
     }
+    isHidderCell=isHide;
 }
 #pragma mark 拖动时赋值
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{

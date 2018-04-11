@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EBA4047B207DE59B00E9E1ED /* CollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EBA4047A207DE59B00E9E1ED /* CollectionViewCell.m */; };
 		EBCC404120746044001DA272 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EBCC404020746044001DA272 /* AppDelegate.m */; };
 		EBCC404420746044001DA272 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EBCC404320746044001DA272 /* ViewController.m */; };
 		EBCC404720746044001DA272 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EBCC404520746044001DA272 /* Main.storyboard */; };
@@ -50,6 +51,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EBA40479207DE59B00E9E1ED /* CollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollectionViewCell.h; sourceTree = "<group>"; };
+		EBA4047A207DE59B00E9E1ED /* CollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CollectionViewCell.m; sourceTree = "<group>"; };
 		EBCC403C20746044001DA272 /* JuImageZoomScale.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JuImageZoomScale.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBCC403F20746044001DA272 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		EBCC404020746044001DA272 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -167,6 +170,8 @@
 				EBCC404020746044001DA272 /* AppDelegate.m */,
 				EBCC404220746044001DA272 /* ViewController.h */,
 				EBCC404320746044001DA272 /* ViewController.m */,
+				EBA40479207DE59B00E9E1ED /* CollectionViewCell.h */,
+				EBA4047A207DE59B00E9E1ED /* CollectionViewCell.m */,
 				EBCC4097207469A4001DA272 /* 3.jpg */,
 				EBCC40A92074784D001DA272 /* 1.jpg */,
 				EBCC404520746044001DA272 /* Main.storyboard */,
@@ -375,6 +380,7 @@
 				EBCC40E82074D004001DA272 /* MKAnnotationView+WebCache.m in Sources */,
 				EBCC40A420746BC5001DA272 /* UIView+JuLayout.m in Sources */,
 				EBCC410A2074D043001DA272 /* JuImagesCollectView.m in Sources */,
+				EBA4047B207DE59B00E9E1ED /* CollectionViewCell.m in Sources */,
 				EBCC40EB2074D004001DA272 /* UIImageView+HighlightedWebCache.m in Sources */,
 				EBCC40F72074D004001DA272 /* UIImage+Cropping.m in Sources */,
 				EBCC40F12074D004001DA272 /* SDImageCache.m in Sources */,
