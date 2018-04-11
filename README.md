@@ -12,7 +12,7 @@
 ****具体使用方法
 
 
-![Image text]https://github.com/jutewei/JuImageZoomScale/blob/master/JuImageZoomScale/show.gif
+![Image text](https://github.com/jutewei/JuImageZoomScale/blob/master/JuImageZoomScale/show.gif)
 JuImagesCollectView *ju_imgCollectView=[[JuImagesCollectView alloc]init];
 
     [self.view addSubview:ju_imgCollectView];
