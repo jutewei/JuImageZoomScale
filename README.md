@@ -10,21 +10,20 @@
 
 支持图片从小到大的动画
 
+支持向下拖拽变小并隐藏
+
+支持3D-touch显示
 ****具体使用方法
-
-JuImagesCollectView *ju_imgCollectView=[[JuImagesCollectView alloc]init];
-
-    [self.view addSubview:ju_imgCollectView];
-    
-    ju_imgCollectView.juEdge(UIEdgeInsetsMake(0, 0, 0, 0));
-    
-    ju_imgCollectView.ju_handle = ^CGRect(id result) {
-        return CGRectMake(100, 150, 100, 100);
-    };
-    
-    [ju_imgCollectView juSetImages:@[[UIImage imageNamed:@"3.jpg"],
-    [UIImage imageNamed:@"1.jpg"],
-    @"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/03/16-49-060144-1442918276.jpeg",
-    @"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-37-080036-1235239760.jpg",
-    @"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-15-220471701481425.jpg"] 
-    currentIndex:0 rect:CGRectMake(100, 200, 100, 100)];
+#初始化获取当前小图的坐标
+-(UIViewController *)juSetImageVC:(NSIndexPath *)indexPath{
+    UICollectionViewCell *cell=[_ju_collectView cellForItemAtIndexPath:indexPath];
+    CGRect frame= [cell.superview convertRect:cell.frame toView:cell.window];
+    JuLargeImageVC *vc=[JuLargeImageVC initView:self.navigationController.view endRect:^CGRect(id result) {
+    //隐藏时获取当前隐藏小图的坐标
+        UICollectionViewCell *cell=[self.ju_collectView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:[result intValue] inSection:0]];
+        CGRect frame= [cell.superview convertRect:cell.frame toView:cell.window];
+        return frame;
+    }];
+    [vc juSetImages:arrList currentIndex:indexPath.row startRect:frame];
+    return vc;
+}
