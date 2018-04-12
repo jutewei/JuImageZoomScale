@@ -232,15 +232,18 @@
 //恢复到原始zoom
 - (void) juHiddenAnimation{
     if (self.isAnimate) {
-//         CGRect frame= [self convertRect:self.ju_imgView.frame toView:self.superview];
-//         self.ju_imageMove.frame=frame;
+//        CGRect frame= [self convertRect:self.ju_imgView.frame toView:self.window];
+//        self.ju_imageMove.frame=frame;
 //        [self.superview addSubview:self.ju_imageMove];
 //        self.ju_imgView.hidden=YES;
         [UIView animateWithDuration:0.3 animations:^{
             self.contentOffset=CGPointMake(0, 0);
             self.contentSize=self->ju_originRect.size;
             self.ju_imgView.frame =self->ju_smallRect;
+//             self.ju_imageMove.frame =self->ju_smallRect;
         }completion:^(BOOL finished) {
+//            self.ju_imageMove.frame =self->ju_smallRect;
+            NSLog(@"完成");
 //            imaView.frame =self->ju_smallRect;
         }];
     }
@@ -382,7 +385,7 @@
     }else{
          changeScale=MAX(1+(currentPoint.y)/300.0,0.9);
     }
-    isDrugMiss=changeScale<0.9;
+
     _ju_imageMove.transform=CGAffineTransformMakeScale(changeScale,changeScale);
     CGFloat minusScale=1-changeScale;
 //    (ju_imgMoveRect.size.width-_ju_imageMove.sizeW)/ju_imgMoveRect.size.width;
@@ -390,6 +393,7 @@
     CGFloat moveY=currentPoint.y+ju_imgMoveRect.origin.y+ju_imgBeginPoint.y*minusScale;
     CGFloat moveX=currentPoint.x+ju_imgMoveRect.origin.x+ju_imgBeginPoint.x*minusScale;
 
+    isDrugMiss=moveY>=self.ju_imageMove.originY;
     self.ju_imageMove.originY=moveY;
     self.ju_imageMove.originX=moveX;
 
