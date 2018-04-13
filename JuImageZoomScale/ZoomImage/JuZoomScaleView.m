@@ -77,31 +77,19 @@
 /**
  加载前的状态
  */
--(void)juSetActivity{
-    if (!self.juActivity) {
-        UIActivityIndicatorView *activityV=[[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        activityV.hidesWhenStopped = YES;
-        activityV.tag              = 112;
-        activityV.center           = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
-        [self addSubview:activityV];
-    }
-    [self.juActivity startAnimating];
-}
 -(UIActivityIndicatorView *)juActivity{
-    return (id)[self viewWithTag:112];
-}
-- (void)juStatusBarOrientationChange:(NSNotification *)notification{
-    if (ju_imgView.image) {
-        [self setImage:ju_imgView.image];
+    UIActivityIndicatorView *activity=(id)[self.superview viewWithTag:112];
+    if (!activity) {
+        activity=[[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        activity.hidesWhenStopped = YES;
+        activity.tag              = 112;
+        activity.center           = self.superview.center;
+        [self.superview addSubview:activity];
     }
+    [activity startAnimating];
+    return activity;
 }
--(void)shSetImageView{
-    ju_imgView               = [[UIImageView alloc] init];
-    ju_imgView.clipsToBounds = YES;
-    ju_imgView.contentMode   = UIViewContentModeScaleAspectFill;
-    ju_imgView.tag=918;
-    [self addSubview:ju_imgView];
-}
+//进度条
 -(JuProgressView *)sh_progressView{
     if (!_sh_progressView) {
         JuProgressView *view=[[JuProgressView alloc]initWithFrame:CGRectMake(0, 0, 50, 50)];
@@ -116,6 +104,19 @@
     }
     return _sh_progressView;
 }
+- (void)juStatusBarOrientationChange:(NSNotification *)notification{
+    if (ju_imgView.image) {
+        [self setImage:ju_imgView.image];
+    }
+}
+-(void)shSetImageView{
+    ju_imgView               = [[UIImageView alloc] init];
+    ju_imgView.clipsToBounds = YES;
+    ju_imgView.contentMode   = UIViewContentModeScaleAspectFill;
+    ju_imgView.tag=918;
+    [self addSubview:ju_imgView];
+}
+
 /**
  设置图片
  */
@@ -242,8 +243,8 @@
             self.ju_imgView.frame =self->ju_smallRect;
 //             self.ju_imageMove.frame =self->ju_smallRect;
         }completion:^(BOOL finished) {
-//            self.ju_imageMove.frame =self->ju_smallRect;
-            NSLog(@"完成");
+            self.ju_imgView.frame =self->ju_smallRect;
+//            NSLog(@"完成");
 //            imaView.frame =self->ju_smallRect;
         }];
     }
@@ -254,12 +255,7 @@
 }
 
 /**
- 消失缩放动画
- */
-//-(void)juAnimationChangSize{}
-
-/**
- 可实习长安保存图片
+ 可实现长安保存图片
  */
 -(void)juTouchLong:(id)sender{
     NSLog(@"长按");
@@ -296,7 +292,7 @@
     if (!isFinishLoad) return nil;
     return ju_imgView;
 }
-
+//捏合缩放动画
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView{
     CGSize boundsSize = scrollView.bounds.size;
     CGRect imgFrame = ju_imgView.frame;
@@ -388,7 +384,6 @@
 
     _ju_imageMove.transform=CGAffineTransformMakeScale(changeScale,changeScale);
     CGFloat minusScale=1-changeScale;
-//    (ju_imgMoveRect.size.width-_ju_imageMove.sizeW)/ju_imgMoveRect.size.width;
 //    移动坐标由原始坐标和移动坐标已经缩放相对尺寸坐标
     CGFloat moveY=currentPoint.y+ju_imgMoveRect.origin.y+ju_imgBeginPoint.y*minusScale;
     CGFloat moveX=currentPoint.x+ju_imgMoveRect.origin.x+ju_imgBeginPoint.x*minusScale;
