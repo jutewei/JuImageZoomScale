@@ -50,12 +50,10 @@
     UIScrollView *scr=(UIScrollView *)sender.view;
     float newScale=0 ;
     if (scr.zoomScale>1.0) {
- //   双击后变成原始尺寸及坐标
-        [scr setZoomScale:1.0 animated:YES];
+        [scr setZoomScale:1.0 animated:YES];
     }
-    else{<br>
-     ####    双击区域实现放大
-       newScale=self.maximumZoomScale;
+    else{
+        newScale=self.maximumZoomScale;
         CGRect zoomRect = [self juZoomRectForScale:newScale withCenter:[sender locationInView:sender.view]];
         [scr zoomToRect:zoomRect animated:YES];
     }
