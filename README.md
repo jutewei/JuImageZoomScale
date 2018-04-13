@@ -44,13 +44,13 @@
   [self addGestureRecognizer:ju_doubleTap];
 ```
 ### 实现        
-```-(void)juDoubleTap:(UIGestureRecognizer *)sender{
+```
+-(void)juDoubleTap:(UIGestureRecognizer *)sender{
     if (!isFinishLoad) return;
     UIScrollView *scr=(UIScrollView *)sender.view;
     float newScale=0 ;
     if (scr.zoomScale>1.0) {
-
- ####    双击后变成原始尺寸及坐标
+ //   双击后变成原始尺寸及坐标
         [scr setZoomScale:1.0 animated:YES];
     }
     else{<br>
@@ -61,7 +61,7 @@
     }
 }
 ```
-//**双击倍数*/
+### 双击倍数
 ```
 - (CGRect)juZoomRectForScale:(float)scale withCenter:(CGPoint)center{
     CGRect zoomRect;
@@ -74,7 +74,8 @@
 ```
 ## 难点：如何在下拉时移动并变小
 ### 判断是否向下滑动，并且是拖拽情况下，_ju_isAlbum为相册选取模式，不支持动画
-```- (void)scrollViewDidScroll:(UIScrollView *)scrollView{ 
+```
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{ 
     CGFloat  scrollNewY = scrollView.contentOffset.y;
     if (scrollNewY <0&&self.dragging&&!_ju_isAlbum){ 
         isDruging=YES; 
@@ -87,26 +88,24 @@
 }
 ```
 ### 主要控制移动视图的X,Y坐标，以及尺寸的缩放比
-```- (void)juTouchPan:(UIPanGestureRecognizer *)pan{ 
-    if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStatePossible){ 
+```
+- (void)juTouchPan:(UIPanGestureRecognizer *)pan{
+    if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStatePossible||pan.numberOfTouches != 1 ){
         isDruging=NO;
         return;
     }
-    if (!self.ju_imageMove) {
-    //复制一个相同的视图为移动时使用 
-      self.ju_imageMove=[[UIImageView alloc]init];
+    if (!self.ju_imageMove.superview) {
         self.ju_imageMove.frame=ju_imgMoveRect;
-        self.ju_imageMove.image=self.ju_imgView.image;
         [self addSubview:self.ju_imageMove];
-    } 
+    }
     self.ju_imgView.hidden=YES;
     self.ju_imageMove.hidden=NO;
     if (ju_moveBeginPoint.y==0&&ju_moveBeginPoint.x==0) {
-        ju_moveBeginPoint=[pan locationInView:self];//记录开始实现下拉时坐标
+        ju_moveBeginPoint=[pan locationInView:self];
         ju_imgBeginPoint=[pan locationInView:_ju_imageMove];
     }
 
-    CGPoint movePoint = [pan locationInView:self]; 
+    CGPoint movePoint = [pan locationInView:self];
     CGPoint currentPoint = CGPointMake(movePoint.x-ju_moveBeginPoint.x, movePoint.y-ju_moveBeginPoint.y);
     CGFloat changeScale;
 
@@ -115,20 +114,47 @@
     }else{
          changeScale=MAX(1+(currentPoint.y)/300.0,0.9);
     }
-    isDrugMiss=changeScale<0.9; 
+
     _ju_imageMove.transform=CGAffineTransformMakeScale(changeScale,changeScale);
     CGFloat minusScale=1-changeScale;
-//    (ju_imgMoveRect.size.width-_ju_imageMove.sizeW)/ju_imgMoveRect.size.width; 
-```
-#### 计算xy坐标
-```
-   CGFloat moveY=currentPoint.y+ju_imgMoveRect.origin.y+ju_imgBeginPoint.y*minusScale; 
+//    移动坐标由原始坐标和移动坐标已经缩放相对尺寸坐标
+    CGFloat moveY=currentPoint.y+ju_imgMoveRect.origin.y+ju_imgBeginPoint.y*minusScale;
     CGFloat moveX=currentPoint.x+ju_imgMoveRect.origin.x+ju_imgBeginPoint.x*minusScale;
-    self.ju_imageMove.originY=moveY; 
-    self.ju_imageMove.originX=moveX; 
+
+    isDrugMiss=moveY>=self.ju_imageMove.originY;
+    self.ju_imageMove.originY=moveY;
+    self.ju_imageMove.originX=moveX;
 
     if ([self.ju_delegate respondsToSelector:@selector(juChangeSacle:)]) {
-        [self.ju_delegate juChangeSacle:changeScale]; 
-    } 
+        [self.ju_delegate juChangeSacle:changeScale];
     }
+}
+```
+//结束拖拽
+```
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
+    if (isDruging) {
+        isDruging=NO;
+        ju_moveBeginPoint=CGPointMake(0, 0);
+        if (isDrugMiss) {///< 达到消失临界值
+            self.ju_imgView.frame= self.ju_imageMove.frame;
+            self.ju_imgView.hidden=NO;
+            [self.ju_imageMove removeFromSuperview];
+            self.ju_imageMove=nil;
+            [self juTouchTapHidder];
+        }else{///< 未达到消失值恢复原始值
+            [UIView animateWithDuration:0.4 animations:^{
+                self.ju_imgView.frame=self->ju_imgMoveRect;
+                self.ju_imageMove.frame=self->ju_imgMoveRect;
+            }completion:^(BOOL finished) {
+                self.ju_imgView.hidden=NO;
+                [self.ju_imageMove removeFromSuperview];
+                self.ju_imageMove=nil;
+            }];
+            if ([self.ju_delegate respondsToSelector:@selector(juChangeSacle:)]) {
+                [self.ju_delegate juChangeSacle:!isDrugMiss];
+            }
+        }
+    }
+}
 ```
