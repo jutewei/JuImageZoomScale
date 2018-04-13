@@ -43,7 +43,7 @@
   ju_doubleTap.numberOfTouchesRequired = 1;
   [self addGestureRecognizer:ju_doubleTap];
 ```
-### 实现        
+### 双击实现        
 ```
 -(void)juDoubleTap:(UIGestureRecognizer *)sender{
     if (!isFinishLoad) return;
@@ -70,6 +70,25 @@
     zoomRect.origin.x = center.x - (zoomRect.size.width  / 2.0);
     zoomRect.origin.y = center.y - (zoomRect.size.height / 2.0);
     return zoomRect;
+}
+```
+### 捏合缩放动画
+```
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView{
+    CGSize boundsSize = scrollView.bounds.size;
+    CGRect imgFrame = ju_imgView.frame;
+    CGSize contentSize = scrollView.contentSize;
+    CGPoint centerPoint = CGPointMake(contentSize.width/2, contentSize.height/2);
+    // center horizontally
+    if (imgFrame.size.width <= boundsSize.width){
+        centerPoint.x = boundsSize.width/2;
+    }
+    // center vertically
+    if (imgFrame.size.height <= boundsSize.height){
+        centerPoint.y = boundsSize.height/2;
+    }
+
+    ju_imgView.center = centerPoint;
 }
 ```
 ## 难点：如何在下拉时移动并变小
@@ -130,7 +149,7 @@
     }
 }
 ```
-//结束拖拽
+### 结束拖拽
 ```
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
     if (isDruging) {
