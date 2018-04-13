@@ -58,8 +58,6 @@
 
         UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(juTouchLong:)];
         [self addGestureRecognizer:longPress];
-        self.alwaysBounceVertical=YES;
-        self.alwaysBounceHorizontal=YES;
         self.maximumZoomScale               = 2;
         self.bouncesZoom                    = YES;
         self.minimumZoomScale               = 1.0;
@@ -93,8 +91,8 @@
     if (!_sh_progressView) {
         JuProgressView *view=[[JuProgressView alloc]initWithFrame:CGRectMake(0, 0, 50, 50)];
         view.center=self.center;
-        view.ju_progressWidth=4;
-        view.ju_backWidth=4;
+        view.ju_progressWidth=5;
+        view.ju_backWidth=5;
         view.ju_progressColor=[UIColor whiteColor];
         view.ju_backColor=[UIColor colorWithWhite:0.5 alpha:0.5];
         view.ju_Progress=0;
@@ -102,6 +100,13 @@
         [self.superview addSubview:view];
     }
     return _sh_progressView;
+}
+-(void)setJu_isAlbum:(BOOL)ju_isAlbum{
+    _ju_isAlbum=ju_isAlbum;
+    if (!_ju_isAlbum) {
+        self.alwaysBounceVertical=YES;
+        self.alwaysBounceHorizontal=YES;
+    }
 }
 - (void)juStatusBarOrientationChange:(NSNotification *)notification{
     if (ju_imgView.image) {
