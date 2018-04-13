@@ -22,6 +22,7 @@
 
 调用方法：初始化并获取当前小图的坐标
 ==
+```
 -(UIViewController *)juSetImageVC:(NSIndexPath *)indexPath{<br> 
     UICollectionViewCell *cell=[_ju_collectView cellForItemAtIndexPath:indexPath];<br> 
     CGRect frame= [cell.superview convertRect:cell.frame toView:cell.window];<br> 
@@ -40,6 +41,7 @@
         ju_doubleTap.numberOfTapsRequired    = 2;<br>
         ju_doubleTap.numberOfTouchesRequired = 1;<br>
         [self addGestureRecognizer:ju_doubleTap];<br>
+```
 ### 实现    <br>     
 -(void)juDoubleTap:(UIGestureRecognizer *)sender{<br>
     if (!isFinishLoad) return;<br>
