@@ -17,6 +17,7 @@
         ju_scaleView.ju_delegate=self;
         [self.contentView addSubview:ju_scaleView];
         ju_scaleView.juEdge(UIEdgeInsetsMake(0, 0, 0, 20));
+        [self.contentView layoutIfNeeded];
     }
     return self;
 }

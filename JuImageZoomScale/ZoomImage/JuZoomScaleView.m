@@ -83,10 +83,9 @@
         activity=[[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         activity.hidesWhenStopped = YES;
         activity.tag              = 112;
-        activity.center           = self.superview.center;
+        activity.center           = self.center;
         [self.superview addSubview:activity];
     }
-    [activity startAnimating];
     return activity;
 }
 //进度条
@@ -100,7 +99,7 @@
         view.ju_backColor=[UIColor colorWithWhite:0.5 alpha:0.5];
         view.ju_Progress=0;
         _sh_progressView=view;
-        [self addSubview:view];
+        [self.superview addSubview:view];
     }
     return _sh_progressView;
 }
@@ -131,20 +130,25 @@
     if ([imageObject isKindOfClass:[UIImage class]]) {
         [self setImage:imageObject];
     }else if ([imageObject isKindOfClass:[NSString class]]){
+        [self.juActivity startAnimating];
         [self juGetNetImage:imageObject];
     }else if ([imageObject isKindOfClass:[JuImageObject class]]){
         JuImageObject *imageM=imageObject;
         if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:imageM.ju_thumbImageUrl]]) {
             [self juGetNetImage:imageM.ju_thumbImageUrl];
+        }else{
+             [self.juActivity startAnimating];
         }
         [self juGetNetImage:imageM.ju_imageUrl];
-    }else{
+    }else if([imageObject isKindOfClass:[PHAsset class]]){
+//可设置先预览小图再显示大图
         [self juGetAssetImage:imageObject];
     }
 }
 
-//相册图片
--(void)juGetAssetImage:(PHAsset *)asset{
+//读取相册图片相册图片
+-(void)juGetAssetImage:(PHAsset *)asset {
+    [self.juActivity startAnimating];
     CGSize size = CGSizeMake(asset.pixelWidth, asset.pixelHeight);
     PHImageRequestOptions *imageOptions = [[PHImageRequestOptions alloc] init];
     imageOptions.synchronous = YES;///< 同步
@@ -153,18 +157,22 @@
     [[PHImageManager defaultManager] requestImageForAsset:(PHAsset *)self targetSize:size contentMode:PHImageContentModeAspectFill options:imageOptions resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         ju_dispatch_get_main_async(^{
             [self setImage:result];
+            [self.juActivity stopAnimating];
         });
     }];
 }
-//网络图片
+//获取网络图片
 -(void)juGetNetImage:(NSString *)imageUrl{
+
     __weak typeof(self) weakSelf = self;
     [ju_imgView setImageWithStr:imageUrl placeholderImage:nil options:SDWebImageAvoidAutoSetImage  progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         ju_dispatch_get_main_async(^{///< 进度
+            [weakSelf.juActivity stopAnimating];
             weakSelf.sh_progressView.ju_Progress=MAX((float)receivedSize/(float)expectedSize, 0.01);
         });
     } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         ju_dispatch_get_main_async(^{///< 完成
+            [weakSelf.juActivity stopAnimating];
             [weakSelf.sh_progressView removeFromSuperview];
             weakSelf.sh_progressView=nil;
             [weakSelf setImage:image];
