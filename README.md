@@ -119,7 +119,7 @@
     self.ju_imageMove.originY=moveY;<br> 
     self.ju_imageMove.originX=moveX;<br> 
 
-    if ([self.ju_delegate respondsToSelector:@selector(juChangeSacle:)]) {<br> 
-        [self.ju_delegate juChangeSacle:changeScale];<br> 
-    }<br> 
-}
+    if ([self.ju_delegate respondsToSelector:@selector(juChangeSacle:)]) {
+        [self.ju_delegate juChangeSacle:changeScale]; 
+    } 
+    }
