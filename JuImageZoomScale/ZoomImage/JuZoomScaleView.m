@@ -22,6 +22,7 @@
     BOOL isDruging,isDrugMiss;
     CGRect ju_imgMoveRect;
     CGPoint ju_moveBeginPoint,ju_imgBeginPoint;
+    CGFloat ju_lastMoveY;
 }
 @property  BOOL isAnimate;
 @property (nonatomic,strong) JuProgressView *sh_progressView;
@@ -338,6 +339,7 @@
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
     if (isDruging) {
         isDruging=NO;
+        ju_lastMoveY=0;
         ju_moveBeginPoint=CGPointMake(0, 0);
         if (isDrugMiss) {///< 达到消失临界值
             self.ju_imgView.frame= self.ju_imageMove.frame;
@@ -371,6 +373,7 @@
 }
 - (void)juTouchPan:(UIPanGestureRecognizer *)pan{
     if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStatePossible||pan.numberOfTouches != 1 ){
+        ju_lastMoveY=0;
         isDruging=NO;
         return;
     }
@@ -398,10 +401,13 @@
     _ju_imageMove.transform=CGAffineTransformMakeScale(changeScale,changeScale);
     CGFloat minusScale=1-changeScale;
 //    移动坐标由原始坐标和移动坐标已经缩放相对尺寸坐标
+
     CGFloat moveY=currentPoint.y+ju_imgMoveRect.origin.y+ju_imgBeginPoint.y*minusScale;
     CGFloat moveX=currentPoint.x+ju_imgMoveRect.origin.x+ju_imgBeginPoint.x*minusScale;
 
-    isDrugMiss=moveY>=self.ju_imageMove.originY;
+    isDrugMiss=moveY>ju_lastMoveY;
+    ju_lastMoveY=moveY;
+
     self.ju_imageMove.originY=moveY;
     self.ju_imageMove.originX=moveX;
 
