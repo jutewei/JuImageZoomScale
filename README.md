@@ -116,7 +116,6 @@
 #### 计算xy坐标
    CGFloat moveY=currentPoint.y+ju_imgMoveRect.origin.y+ju_imgBeginPoint.y*minusScale;<br> 
     CGFloat moveX=currentPoint.x+ju_imgMoveRect.origin.x+ju_imgBeginPoint.x*minusScale;<br> 
-//    NSLog(@"坐标X:%f y:%f 减少的宽 w:%f h:%f",moveX,moveY,minusScale,minusScale);
     self.ju_imageMove.originY=moveY;<br> 
     self.ju_imageMove.originX=moveX;<br> 
 
