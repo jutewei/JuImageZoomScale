@@ -121,22 +121,25 @@
 //        }
 //        [self juSetHidder:hidder];
     }
+    if (!enable) {
+        [self.ju_collectView setContentOffset:CGPointMake(ju_currentIndex*(JU_Window_Width+20), 0)];
+    }
     self.ju_collectView.scrollEnabled=enable;
 }
 
--(void)juSetHidder:(BOOL)isHide{
-//    if (isHide!=isHidderCell) {
-//        for (NSIndexPath *indexPath in self.ju_collectView.indexPathsForVisibleItems) {
-//            JuImagesCollectCell *cell=(id)[self.ju_collectView cellForItemAtIndexPath:indexPath];
-//            if (ju_currentIndex==indexPath.row) {
-//                [cell juSetContentHidden:NO];
-//            }else{
-//                [cell juSetContentHidden:isHide];
-//            }
-//        }
-//    }
-//    isHidderCell=isHide;
-}
+/*-(void)juSetHidder:(BOOL)isHide{
+    if (isHide!=isHidderCell) {
+        for (NSIndexPath *indexPath in self.ju_collectView.indexPathsForVisibleItems) {
+            JuImagesCollectCell *cell=(id)[self.ju_collectView cellForItemAtIndexPath:indexPath];
+            if (ju_currentIndex==indexPath.row) {
+                [cell juSetContentHidden:NO];
+            }else{
+                [cell juSetContentHidden:isHide];
+            }
+        }
+    }
+    isHidderCell=isHide;
+}*/
 #pragma mark 拖动时赋值
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     CGFloat scrollViewX=scrollView.contentOffset.x;
