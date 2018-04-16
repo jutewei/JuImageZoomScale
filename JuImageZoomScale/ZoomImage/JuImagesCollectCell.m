@@ -38,6 +38,7 @@
         return [self.ju_delegate juChangeCellSacle:scale];
     }
 }
+
 -(void)juSetContentHidden:(BOOL)isHidden{
     ju_scaleView.hidden=isHidden;
 }

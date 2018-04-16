@@ -17,6 +17,7 @@
 -(CGRect)juCurrentCellRect;
 -(void)juTapCellHidder;
 -(void)juChangeCellSacle:(CGFloat)scale;
+
 @end
 
 @interface JuImagesCollectCell : UICollectionViewCell<JuImageZoomScaleDelegate>{

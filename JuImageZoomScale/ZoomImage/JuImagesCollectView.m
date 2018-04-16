@@ -104,37 +104,38 @@
         }
     }];
 }
+
 -(void)juChangeCellSacle:(CGFloat)scale{
-    BOOL hidder=scale<1;
+    BOOL enable=scale==1;
     if (scale==1) {
         [UIView animateWithDuration:0.3 animations:^{
             self.ju_collectView.backgroundColor=[UIColor colorWithWhite:0 alpha:1];
         }completion:^(BOOL finished) {
-            [self juSetHidder:hidder];
+//            [self juSetHidder:hidder];
         }];
     }else{
-        if (scale==0) {
-            [self juTapCellHidder];
-        }else{
+//        if (scale==0) {
+//            [self juTapCellHidder];
+//        }else{
             self.ju_collectView.backgroundColor=[UIColor colorWithWhite:0 alpha:scale];
-        }
-        [self juSetHidder:hidder];
+//        }
+//        [self juSetHidder:hidder];
     }
-
+    self.ju_collectView.scrollEnabled=enable;
 }
 
 -(void)juSetHidder:(BOOL)isHide{
-    if (isHide!=isHidderCell) {
-        for (NSIndexPath *indexPath in self.ju_collectView.indexPathsForVisibleItems) {
-            JuImagesCollectCell *cell=(id)[self.ju_collectView cellForItemAtIndexPath:indexPath];
-            if (ju_currentIndex==indexPath.row) {
-                [cell juSetContentHidden:NO];
-            }else{
-                [cell juSetContentHidden:isHide];
-            }
-        }
-    }
-    isHidderCell=isHide;
+//    if (isHide!=isHidderCell) {
+//        for (NSIndexPath *indexPath in self.ju_collectView.indexPathsForVisibleItems) {
+//            JuImagesCollectCell *cell=(id)[self.ju_collectView cellForItemAtIndexPath:indexPath];
+//            if (ju_currentIndex==indexPath.row) {
+//                [cell juSetContentHidden:NO];
+//            }else{
+//                [cell juSetContentHidden:isHide];
+//            }
+//        }
+//    }
+//    isHidderCell=isHide;
 }
 #pragma mark 拖动时赋值
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
@@ -149,6 +150,15 @@
     ju_itemWidth=JU_Window_Width+20;
     return CGSizeMake(ju_itemWidth, JU_Window_Height);
 }
+//- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer{
+//    CGPoint translation = [self.ju_collectView.panGestureRecognizer translationInView:self];
+//    if (gestureRecognizer==self.ju_collectView.panGestureRecognizer) {
+//        if (fabs(translation.y)>= fabs(translation.x)) {// 手势冲突，解决tableview不可拖动
+//            return NO;
+//        }
+//    }
+//    return YES;
+//}
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter]removeObserver:self];
 }

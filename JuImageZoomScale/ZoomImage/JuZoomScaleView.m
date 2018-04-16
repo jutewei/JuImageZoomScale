@@ -341,6 +341,7 @@
         isDruging=NO;
         ju_lastMoveY=0;
         ju_moveBeginPoint=CGPointMake(0, 0);
+//        [self.ju_delegate juScrollEnable:YES];
         if (isDrugMiss) {///< 达到消失临界值
             self.ju_imgView.frame= self.ju_imageMove.frame;
             self.ju_imgView.hidden=NO;
@@ -377,6 +378,7 @@
         isDruging=NO;
         return;
     }
+//    [self.ju_delegate juScrollEnable:NO];
     if (!self.ju_imageMove.superview) {
         self.ju_imageMove.frame=ju_imgMoveRect;
         [self addSubview:self.ju_imageMove];
@@ -412,9 +414,24 @@
     self.ju_imageMove.originX=moveX;
 
     if ([self.ju_delegate respondsToSelector:@selector(juChangeSacle:)]) {
-        [self.ju_delegate juChangeSacle:changeScale];
+        [self.ju_delegate juChangeSacle:MIN(0.99, changeScale)];
     }
 }
+//- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer{
+//    CGPoint translation = [self.panGestureRecognizer translationInView:self];
+//    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+//        if (self.panGestureRecognizer==gestureRecognizer) {
+//            if (fabs(translation.y)>= fabs(translation.x)) {// 上下下滑
+//                [self.ju_delegate juScrollEnable:NO];
+//                return YES;
+//            }else{
+//                  [self.ju_delegate juScrollEnable:NO];
+//                return NO;
+//            }
+//        }
+//    }
+//    return YES;
+//}
 
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter]removeObserver:self];
