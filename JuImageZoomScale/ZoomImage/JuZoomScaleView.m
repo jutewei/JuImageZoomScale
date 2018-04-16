@@ -21,7 +21,7 @@
     dispatch_queue_t ju_queueFullImage;
     BOOL isDrugDown,isDrugMiss,isBeginDown;
 //    CGRect ju_imgMoveRect;///此变量可以不用
-    CGPoint ju_moveBeginPoint,ju_imgBeginPoint,ju_scrollOffSet;
+    CGPoint ju_moveBeginPoint,ju_imgBeginPoint;
     CGFloat ju_lastMoveY;
 }
 @property  BOOL isAnimate;
@@ -306,6 +306,7 @@
 }
 //捏合缩放动画
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView{
+    
     CGSize boundsSize = scrollView.bounds.size;
     CGRect imgFrame = ju_imgView.frame;
     CGSize contentSize = scrollView.contentSize;
@@ -325,9 +326,9 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     CGFloat  scrollNewY = scrollView.contentOffset.y;
     if (scrollNewY <0&&self.dragging&&!_ju_isAlbum&&isBeginDown){
-        if (!isDrugDown) {
-            ju_scrollOffSet=self.contentOffset;
-        }
+//        if (!isDrugDown) {
+//            ju_scrollOffSet=self.contentOffset;
+//        }
         isDrugDown=YES;
 //        if (ju_scrollOffSet.y==0) {
 ////            ju_imgMoveRect=self.ju_imgView.frame;
@@ -341,22 +342,21 @@
 //结束拖拽
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
     if (isDrugDown) {
-        isDrugDown=NO;
-        ju_lastMoveY=0;
-        ju_moveBeginPoint=CGPointMake(0, 0);
         if (isDrugMiss) {///< 达到消失临界值
-            self.contentOffset=ju_scrollOffSet;
+//            self.contentOffset=ju_scrollOffSet;
             self.ju_imgView.frame= self.ju_imageMove.frame;
             self.ju_imgView.hidden=NO;
             [self.ju_imageMove removeFromSuperview];
             self.ju_imageMove=nil;
             [self juTouchTapHidder];
         }else{///< 未达到消失值恢复原始值
+            isDrugDown=NO;
+            ju_lastMoveY=0;
+            ju_moveBeginPoint=CGPointMake(0, 0);
             [UIView animateWithDuration:0.4 animations:^{
                 self.ju_imgView.frame=self.ju_imgMoveRect;
                 self.ju_imageMove.frame=self.ju_imgMoveRect;
             }completion:^(BOOL finished) {
-//                self->ju_imgMoveRect=CGRectZero;
                 self.ju_imgView.hidden=NO;
                 [self.ju_imageMove removeFromSuperview];
                 self.ju_imageMove=nil;
@@ -425,7 +425,7 @@
 }
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer{
     CGPoint translation = [self.panGestureRecognizer translationInView:self];
-    isBeginDown=(translation.y>=0);
+    isBeginDown=(translation.y>0)&&gestureRecognizer.numberOfTouches==1;
     if (gestureRecognizer==self.panGestureRecognizer) {
         if (fabs(translation.y) <= fabs(translation.x)) {// 手势冲突
             return NO;
