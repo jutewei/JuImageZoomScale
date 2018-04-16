@@ -114,12 +114,7 @@
 //            [self juSetHidder:hidder];
         }];
     }else{
-//        if (scale==0) {
-//            [self juTapCellHidder];
-//        }else{
-            self.ju_collectView.backgroundColor=[UIColor colorWithWhite:0 alpha:scale];
-//        }
-//        [self juSetHidder:hidder];
+        self.ju_collectView.backgroundColor=[UIColor colorWithWhite:0 alpha:scale];
     }
     if (!enable) {
         [self.ju_collectView setContentOffset:CGPointMake(ju_currentIndex*(JU_Window_Width+20), 0)];
@@ -127,23 +122,11 @@
     self.ju_collectView.scrollEnabled=enable;
 }
 
-/*-(void)juSetHidder:(BOOL)isHide{
-    if (isHide!=isHidderCell) {
-        for (NSIndexPath *indexPath in self.ju_collectView.indexPathsForVisibleItems) {
-            JuImagesCollectCell *cell=(id)[self.ju_collectView cellForItemAtIndexPath:indexPath];
-            if (ju_currentIndex==indexPath.row) {
-                [cell juSetContentHidden:NO];
-            }else{
-                [cell juSetContentHidden:isHide];
-            }
-        }
-    }
-    isHidderCell=isHide;
-}*/
 #pragma mark 拖动时赋值
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-    CGFloat scrollViewX=scrollView.contentOffset.x;
+    CGFloat scrollViewX=scrollView.contentOffset.x+JU_Window_Width/3;
     ju_currentIndex=scrollViewX/CGRectGetWidth(scrollView.frame);
+    NSLog(@"%ld %f",ju_currentIndex,scrollViewX);
 }
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
 

@@ -19,9 +19,9 @@
     CGRect ju_smallRect;
     BOOL isFinishLoad;
     dispatch_queue_t ju_queueFullImage;
-    BOOL isDruging,isDrugMiss;
-    CGRect ju_imgMoveRect;
-    CGPoint ju_moveBeginPoint,ju_imgBeginPoint;
+    BOOL isDrugDown,isDrugMiss,isBeginDown;
+//    CGRect ju_imgMoveRect;///此变量可以不用
+    CGPoint ju_moveBeginPoint,ju_imgBeginPoint,ju_scrollOffSet;
     CGFloat ju_lastMoveY;
 }
 @property  BOOL isAnimate;
@@ -222,12 +222,10 @@
 }
 //隐藏
 -(void)juTouchTapHidder{
-
     if (_ju_isAlbum&&[self.ju_delegate respondsToSelector:@selector(juTapHidder)]) {
         [self.ju_delegate juTapHidder];
         return;
     }
-
     if ([self.ju_delegate respondsToSelector:@selector(juCurrentRect)]) {///< 网络图片看大图
         CGRect frame= [self.ju_delegate juCurrentRect];
         if (frame.size.width>0) {
@@ -326,23 +324,28 @@
 /**判断是否向下拖拽*/
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     CGFloat  scrollNewY = scrollView.contentOffset.y;
-    if (scrollNewY <0&&self.dragging&&!_ju_isAlbum){
-        isDruging=YES;
-        ju_imgMoveRect=self.ju_imgView.frame;
+    if (scrollNewY <0&&self.dragging&&!_ju_isAlbum&&isBeginDown){
+        if (!isDrugDown) {
+            ju_scrollOffSet=self.contentOffset;
+        }
+        isDrugDown=YES;
+//        if (ju_scrollOffSet.y==0) {
+////            ju_imgMoveRect=self.ju_imgView.frame;
+//            ju_scrollOffSet=self.contentOffset;
+//        }
     }
-    if (isDruging) {
+    if (isDrugDown) {
         [self juTouchPan:scrollView.panGestureRecognizer];
-
     }
 }
 //结束拖拽
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
-    if (isDruging) {
-        isDruging=NO;
+    if (isDrugDown) {
+        isDrugDown=NO;
         ju_lastMoveY=0;
         ju_moveBeginPoint=CGPointMake(0, 0);
-//        [self.ju_delegate juScrollEnable:YES];
         if (isDrugMiss) {///< 达到消失临界值
+            self.contentOffset=ju_scrollOffSet;
             self.ju_imgView.frame= self.ju_imageMove.frame;
             self.ju_imgView.hidden=NO;
             [self.ju_imageMove removeFromSuperview];
@@ -350,9 +353,10 @@
             [self juTouchTapHidder];
         }else{///< 未达到消失值恢复原始值
             [UIView animateWithDuration:0.4 animations:^{
-                self.ju_imgView.frame=self->ju_imgMoveRect;
-                self.ju_imageMove.frame=self->ju_imgMoveRect;
+                self.ju_imgView.frame=self.ju_imgMoveRect;
+                self.ju_imageMove.frame=self.ju_imgMoveRect;
             }completion:^(BOOL finished) {
+//                self->ju_imgMoveRect=CGRectZero;
                 self.ju_imgView.hidden=NO;
                 [self.ju_imageMove removeFromSuperview];
                 self.ju_imageMove=nil;
@@ -362,6 +366,9 @@
             }
         }
     }
+}
+-(CGRect)ju_imgMoveRect{
+    return self.ju_imgView.frame;
 }
 -(UIImageView *)ju_imageMove{
     if (!_ju_imageMove) {
@@ -375,19 +382,18 @@
 - (void)juTouchPan:(UIPanGestureRecognizer *)pan{
     if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStatePossible||pan.numberOfTouches != 1 ){
         ju_lastMoveY=0;
-        isDruging=NO;
+        isDrugDown=NO;
         return;
     }
-//    [self.ju_delegate juScrollEnable:NO];
     if (!self.ju_imageMove.superview) {
-        self.ju_imageMove.frame=ju_imgMoveRect;
+        self.ju_imageMove.frame=self.ju_imgMoveRect;
         [self addSubview:self.ju_imageMove];
     }
     self.ju_imgView.hidden=YES;
     self.ju_imageMove.hidden=NO;
     if (ju_moveBeginPoint.y==0&&ju_moveBeginPoint.x==0) {
-        ju_moveBeginPoint=[pan locationInView:self];
-        ju_imgBeginPoint=[pan locationInView:_ju_imageMove];
+        ju_moveBeginPoint=[pan locationInView:self];/// 记录开始移动时坐标
+        ju_imgBeginPoint=[pan locationInView:_ju_imageMove];/// 记录图片移动开始的时候坐标
     }
 
     CGPoint movePoint = [pan locationInView:self];
@@ -404,8 +410,8 @@
     CGFloat minusScale=1-changeScale;
 //    移动坐标由原始坐标和移动坐标已经缩放相对尺寸坐标
 
-    CGFloat moveY=currentPoint.y+ju_imgMoveRect.origin.y+ju_imgBeginPoint.y*minusScale;
-    CGFloat moveX=currentPoint.x+ju_imgMoveRect.origin.x+ju_imgBeginPoint.x*minusScale;
+    CGFloat moveY=currentPoint.y+self.ju_imgMoveRect.origin.y+ju_imgBeginPoint.y*minusScale;
+    CGFloat moveX=currentPoint.x+self.ju_imgMoveRect.origin.x+ju_imgBeginPoint.x*minusScale;
 
     isDrugMiss=moveY>ju_lastMoveY;
     ju_lastMoveY=moveY;
@@ -417,22 +423,19 @@
         [self.ju_delegate juChangeSacle:MIN(0.99, changeScale)];
     }
 }
-//- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer{
-//    CGPoint translation = [self.panGestureRecognizer translationInView:self];
-//    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-//        if (self.panGestureRecognizer==gestureRecognizer) {
-//            if (fabs(translation.y)>= fabs(translation.x)) {// 上下下滑
-//                [self.ju_delegate juScrollEnable:NO];
-//                return YES;
-//            }else{
-//                  [self.ju_delegate juScrollEnable:NO];
-//                return NO;
-//            }
-//        }
-//    }
-//    return YES;
-//}
-
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer{
+    CGPoint translation = [self.panGestureRecognizer translationInView:self];
+    isBeginDown=(translation.y>=0);
+    if (gestureRecognizer==self.panGestureRecognizer) {
+        if (fabs(translation.y) <= fabs(translation.x)) {// 手势冲突
+            return NO;
+        }
+        if (translation.y<0&&self.contentSize.height<self.sizeH) {
+            return NO;
+        }
+    }
+    return YES;
+}
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter]removeObserver:self];
     ju_queueFullImage=nil;
