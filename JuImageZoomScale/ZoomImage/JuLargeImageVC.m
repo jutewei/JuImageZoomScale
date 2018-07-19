@@ -39,6 +39,11 @@
     vc.ju_handle =  handle;
     return vc;
 }
++(instancetype)initRect:(CGRect)frame images:(NSArray *)arrList currentIndex:(NSInteger)index finishHandle:(JuHandle)handle{
+    JuLargeImageVC *vc=[JuLargeImageVC initRect:handle];
+    [vc juSetImages:arrList currentIndex:index startRect:frame];
+    return vc;
+}
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];

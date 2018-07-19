@@ -11,6 +11,7 @@
 @interface JuLargeImageVC : UIViewController<UINavigationControllerDelegate>
 
 +(instancetype)initRect:(JuHandle)handle;
++(instancetype)initRect:(CGRect)frame images:(NSArray *)arrList currentIndex:(NSInteger)index finishHandle:(JuHandle)handle;
 
 @property (nonatomic,copy) JuHandle ju_handle;
 -(void)juSetImages:(NSArray *)arrList currentIndex:(NSInteger)index startRect:(CGRect)frame;
