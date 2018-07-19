@@ -10,6 +10,7 @@
 #import "JuImagesCollectView.h"
 #import "UIView+JuLayout.h"
 #import "JuAnimated.h"
+#import "JuImageObject.h"
 @interface JuLargeImageVC ()<UIViewControllerTransitioningDelegate>{
      JuImagesCollectView *ju_imgCollectView;
 }
@@ -40,8 +41,11 @@
     return vc;
 }
 +(instancetype)initRect:(CGRect)frame images:(NSArray *)arrList currentIndex:(NSInteger)index finishHandle:(JuHandle)handle{
+    return [self initRect:frame images:arrList currentIndex:index thumbSize:CGSizeZero finishHandle:handle];
+}
++(instancetype)initRect:(CGRect)frame images:(NSArray *)arrList currentIndex:(NSInteger)index thumbSize:(CGSize)size finishHandle:(JuHandle)handle{
     JuLargeImageVC *vc=[JuLargeImageVC initRect:handle];
-    [vc juSetImages:arrList currentIndex:index startRect:frame];
+    [vc juSetImages:arrList thumbSize:size currentIndex:index startRect:frame];
     return vc;
 }
 -(void)viewWillAppear:(BOOL)animated{
@@ -75,7 +79,11 @@
     return self.ju_animator;
 }
 -(void)juSetImages:(NSArray *)arrList currentIndex:(NSInteger)index startRect:(CGRect)frame{
-    [ju_imgCollectView juSetImages:arrList currentIndex:index rect:frame];
+
+    [self juSetImages:arrList thumbSize:CGSizeZero currentIndex:index startRect:frame];
+}
+-(void)juSetImages:(NSArray *)arrList thumbSize:(CGSize)size currentIndex:(NSInteger)index startRect:(CGRect)frame{
+    [ju_imgCollectView juSetImages:[JuImageObject juSwithObject:arrList size:size] currentIndex:index rect:frame];
 }
 //-(BOOL)prefersStatusBarHidden{
 //    return YES;

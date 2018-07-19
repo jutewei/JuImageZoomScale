@@ -10,7 +10,7 @@
 #import "UIView+JuLayout.h"
 #import "JuImagesCollectCell.h"
 #import "JuZoomScaleView.h"
-
+#import "JuImageObject.h"
 @interface JuImagesCollectView()<JuImagesCollectCellDelegate>{
     NSInteger  ju_currentIndex;
     CGFloat ju_itemWidth;

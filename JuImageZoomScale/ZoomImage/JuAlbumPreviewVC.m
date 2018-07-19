@@ -9,6 +9,7 @@
 #import "JuAlbumPreviewVC.h"
 #import "JuImagesCollectView.h"
 #import "UIView+JuLayout.h"
+#import "JuImageObject.h"
 @interface JuAlbumPreviewVC (){
     JuImagesCollectView *ju_imgCollectView;
     BOOL isHidderStatus;
@@ -83,7 +84,7 @@
     return isHidderStatus;
 }
 -(void)juSetImages:(NSArray *)arrList currentIndex:(NSInteger)index{
-    [ju_imgCollectView juSetImages:arrList currentIndex:index rect:CGRectZero];
+    [ju_imgCollectView juSetImages:[JuImageObject juSwithObject:arrList size:CGSizeZero] currentIndex:index  rect:CGRectZero];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

@@ -17,15 +17,16 @@
     CGRect ju_originRect;
     //缩放前大小
     CGRect ju_smallRect;
-    BOOL isFinishLoad;
+//    BOOL isFinishLoad;
     dispatch_queue_t ju_queueFullImage;
     BOOL isDrugDown,isDrugMiss,isBeginDown;
-//    CGRect ju_imgMoveRect;///此变量可以不用
+    //    CGRect ju_imgMoveRect;///此变量可以不用
     CGPoint ju_moveBeginPoint,ju_imgBeginPoint;
     CGFloat ju_lastMoveY;
 }
 @property  BOOL isAnimate;
 @property (nonatomic,strong) JuProgressView *sh_progressView;
+@property (nonatomic,weak) JuImageObject *ju_imageM;
 @property (nonatomic,strong) UIImageView *ju_imageMove;
 @end
 
@@ -33,12 +34,12 @@
 
 @synthesize ju_imgView;
 /*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect {
+ // Drawing code
+ }
+ */
 -(id)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self){
@@ -64,7 +65,7 @@
         self.minimumZoomScale               = 1.0;
         ju_queueFullImage=dispatch_queue_create("queue.getFullImage", DISPATCH_QUEUE_SERIAL);///< 串行队列
         [self shSetImageView];
-//        屏幕旋转时重新布局
+        //        屏幕旋转时重新布局
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(juStatusBarOrientationChange:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
         if (@available(iOS 11.0, *)) {
             self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
@@ -127,28 +128,28 @@
  */
 - (void) setImage:(id)imageObject originalRect:(CGRect)originalRect{
     if (!imageObject) return;
+//    isFinishLoad=NO;
+     _ju_imageM=imageObject;
 
     if (originalRect.size.width>0) {
         _isAnimate=YES;
         ju_imgView.frame = originalRect;
         ju_smallRect = originalRect;
     }
-    if ([imageObject isKindOfClass:[UIImage class]]) {
-        [self setImage:imageObject];
-    }else if ([imageObject isKindOfClass:[NSString class]]){
-        [self.juActivity startAnimating];
-        [self juGetNetImage:imageObject];
-    }else if ([imageObject isKindOfClass:[JuImageObject class]]){
-        JuImageObject *imageM=imageObject;
-        if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:imageM.ju_thumbImageUrl]]) {
-            [self juGetNetImage:imageM.ju_thumbImageUrl];
+    if (_ju_imageM.ju_imageType==JuImageTypeImage) {
+        [self setImage:_ju_imageM.ju_image];
+        _ju_imageM.ju_progress=1;
+    }else if (_ju_imageM.ju_imageType==JuImageTypeUrl){
+        if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:_ju_imageM.ju_thumbImageUrl]]) {
+            UIImage *lastPreviousCachedImage = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:_ju_imageM.ju_thumbImageUrl];
+            [self setImage:lastPreviousCachedImage];
         }else{
-             [self.juActivity startAnimating];
+            [self.juActivity startAnimating];
         }
-        [self juGetNetImage:imageM.ju_imageUrl];
-    }else if([imageObject isKindOfClass:[PHAsset class]]){
-//可设置先预览小图再显示大图
-        [self juGetAssetImage:imageObject];
+        [self juGetNetImage:_ju_imageM.ju_imageUrl];
+    }else if(_ju_imageM.ju_imageType==JuImageTypeAsset){
+        //可设置先预览小图再显示大图
+        [self juGetAssetImage:_ju_imageM.ju_asset];
     }
 }
 
@@ -162,28 +163,35 @@
     // 请求图片
     [[PHImageManager defaultManager] requestImageForAsset:(PHAsset *)self targetSize:size contentMode:PHImageContentModeAspectFill options:imageOptions resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         ju_dispatch_get_main_async(^{
-            [self setImage:result];
-            [self.juActivity stopAnimating];
+            [self juFinishLoad:result];
         });
     }];
 }
 //获取网络图片
 -(void)juGetNetImage:(NSString *)imageUrl{
 
+    if (_ju_imageM.ju_progress<1) {
+        self.sh_progressView.hidden=NO;
+        self.sh_progressView.ju_Progress=_ju_imageM.ju_progress;
+    }
     __weak typeof(self) weakSelf = self;
     [ju_imgView setImageWithStr:imageUrl placeholderImage:nil options:SDWebImageAvoidAutoSetImage  progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         ju_dispatch_get_main_async(^{///< 进度
             [weakSelf.juActivity stopAnimating];
-            weakSelf.sh_progressView.ju_Progress=MAX((float)receivedSize/(float)expectedSize, 0.01);
+            weakSelf.ju_imageM.ju_progress=MAX((float)receivedSize/(float)expectedSize, 0.01);
+            weakSelf.sh_progressView.ju_Progress=weakSelf.ju_imageM.ju_progress;
         });
     } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         ju_dispatch_get_main_async(^{///< 完成
-            [weakSelf.juActivity stopAnimating];
-            [weakSelf.sh_progressView removeFromSuperview];
-            weakSelf.sh_progressView=nil;
-            [weakSelf setImage:image];
+            [weakSelf juFinishLoad:image];
         });
     }];
+}
+-(void)juFinishLoad:(UIImage *)image{
+    [self.juActivity stopAnimating];
+    self.sh_progressView.hidden=YES;
+    [self setImage:image];
+    _ju_imageM.ju_progress=1;
 }
 //设置图片展开
 - (void) setImage:(UIImage *)image{
@@ -207,17 +215,17 @@
             ju_originRect = (CGRect){0,JU_Window_Height/2-imgViewHeight/2,JU_Window_Width,imgViewHeight};
         }
         [self juShowAnimation];
-        isFinishLoad=YES;
+
     }
 }
 - (void) juShowAnimation{
-//    ju_imgView.transform = CGAffineTransformMakeScale(1, 1);///< 修复图片大小变为0
-//     self.zoomScale=1.0;
+    //    ju_imgView.transform = CGAffineTransformMakeScale(1, 1);///< 修复图片大小变为0
+    //     self.zoomScale=1.0;
 
     [UIView animateWithDuration:_isAnimate?0.3:0 animations:^{
         self.ju_imgView.frame = self->ju_originRect;
     }completion:^(BOOL finished) {
-         self.contentSize=self.ju_imgView.frame.size;
+        self.contentSize=self.ju_imgView.frame.size;
     }];
 }
 //隐藏
@@ -245,19 +253,19 @@
 //恢复到原始zoom
 - (void) juHiddenAnimation{
     if (self.isAnimate) {
-//        CGRect frame= [self convertRect:self.ju_imgView.frame toView:self.window];
-//        self.ju_imageMove.frame=frame;
-//        [self.superview addSubview:self.ju_imageMove];
-//        self.ju_imgView.hidden=YES;
+        //        CGRect frame= [self convertRect:self.ju_imgView.frame toView:self.window];
+        //        self.ju_imageMove.frame=frame;
+        //        [self.superview addSubview:self.ju_imageMove];
+        //        self.ju_imgView.hidden=YES;
         [UIView animateWithDuration:0.3 animations:^{
             self.contentOffset=CGPointMake(0, 0);
             self.contentSize=self->ju_originRect.size;
             self.ju_imgView.frame =self->ju_smallRect;
-//             self.ju_imageMove.frame =self->ju_smallRect;
+            //             self.ju_imageMove.frame =self->ju_smallRect;
         }completion:^(BOOL finished) {
             self.ju_imgView.frame =self->ju_smallRect;
-//            NSLog(@"完成");
-//            imaView.frame =self->ju_smallRect;
+            //            NSLog(@"完成");
+            //            imaView.frame =self->ju_smallRect;
         }];
     }
     if ([self.ju_delegate respondsToSelector:@selector(juTapHidder)]) {
@@ -277,7 +285,7 @@
  双击缩放
  */
 -(void)juDoubleTap:(UIGestureRecognizer *)sender{
-    if (!isFinishLoad) return;
+    if (_ju_imageM.ju_progress<1) return;
     UIScrollView *scr=(UIScrollView *)sender.view;
     float newScale=0 ;
     if (scr.zoomScale>1.0) {
@@ -301,12 +309,12 @@
 #pragma mark -
 #pragma mark - scroll delegate
 - (UIView *) viewForZoomingInScrollView:(UIScrollView *)scrollView{
-    if (!isFinishLoad) return nil;
+    if (_ju_imageM.ju_progress<1) return nil;
     return ju_imgView;
 }
 //捏合缩放动画
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView{
-    
+
     CGSize boundsSize = scrollView.bounds.size;
     CGRect imgFrame = ju_imgView.frame;
     CGSize contentSize = scrollView.contentSize;
@@ -326,14 +334,14 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     CGFloat  scrollNewY = scrollView.contentOffset.y;
     if (scrollNewY <0&&self.dragging&&!_ju_isAlbum&&isBeginDown){
-//        if (!isDrugDown) {
-//            ju_scrollOffSet=self.contentOffset;
-//        }
+        //        if (!isDrugDown) {
+        //            ju_scrollOffSet=self.contentOffset;
+        //        }
         isDrugDown=YES;
-//        if (ju_scrollOffSet.y==0) {
-////            ju_imgMoveRect=self.ju_imgView.frame;
-//            ju_scrollOffSet=self.contentOffset;
-//        }
+        //        if (ju_scrollOffSet.y==0) {
+        ////            ju_imgMoveRect=self.ju_imgView.frame;
+        //            ju_scrollOffSet=self.contentOffset;
+        //        }
     }
     if (isDrugDown) {
         [self juTouchPan:scrollView.panGestureRecognizer];
@@ -343,7 +351,7 @@
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
     if (isDrugDown) {
         if (isDrugMiss) {///< 达到消失临界值
-//            self.contentOffset=ju_scrollOffSet;
+            //            self.contentOffset=ju_scrollOffSet;
             self.ju_imgView.frame= self.ju_imageMove.frame;
             self.ju_imgView.hidden=NO;
             [self.ju_imageMove removeFromSuperview];
@@ -401,14 +409,14 @@
     CGFloat changeScale;
 
     if (currentPoint.y>0) {
-         changeScale=MAX(1-(currentPoint.y)/300.0,0.3);
+        changeScale=MAX(1-(currentPoint.y)/300.0,0.3);
     }else{
-         changeScale=MAX(1+(currentPoint.y)/300.0,0.9);
+        changeScale=MAX(1+(currentPoint.y)/300.0,0.9);
     }
 
     _ju_imageMove.transform=CGAffineTransformMakeScale(changeScale,changeScale);
     CGFloat minusScale=1-changeScale;
-//    移动坐标由原始坐标和移动坐标已经缩放相对尺寸坐标
+    //    移动坐标由原始坐标和移动坐标已经缩放相对尺寸坐标
 
     CGFloat moveY=currentPoint.y+self.ju_imgMoveRect.origin.y+ju_imgBeginPoint.y*minusScale;
     CGFloat moveX=currentPoint.x+self.ju_imgMoveRect.origin.x+ju_imgBeginPoint.x*minusScale;
