@@ -177,13 +177,17 @@
     __weak typeof(self) weakSelf = self;
     [ju_imgView setImageWithStr:imageUrl placeholderImage:nil options:SDWebImageAvoidAutoSetImage  progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         ju_dispatch_get_main_async(^{///< 进度
-            [weakSelf.juActivity stopAnimating];
-            weakSelf.ju_imageM.ju_progress=MAX((float)receivedSize/(float)expectedSize, 0.01);
-            weakSelf.sh_progressView.ju_Progress=weakSelf.ju_imageM.ju_progress;
+            if ([imageUrl isEqual:weakSelf.ju_imageM.ju_imageUrl]) {
+                [weakSelf.juActivity stopAnimating];
+                weakSelf.ju_imageM.ju_progress=MAX((float)receivedSize/(float)expectedSize, 0.01);
+                weakSelf.sh_progressView.ju_Progress=weakSelf.ju_imageM.ju_progress;
+            }
         });
     } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         ju_dispatch_get_main_async(^{///< 完成
-            [weakSelf juFinishLoad:image];
+            if ([imageUrl isEqual:weakSelf.ju_imageM.ju_imageUrl]) {
+                [weakSelf juFinishLoad:image];
+            }
         });
     }];
 }
