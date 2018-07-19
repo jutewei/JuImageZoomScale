@@ -131,6 +131,10 @@
         [self.ju_collectView setContentOffset:CGPointMake(ju_currentIndex*(JU_Window_Width+20), 0)];
     }
     self.ju_collectView.scrollEnabled=enable;
+
+    if (self.ju_scaleHandle) {
+        self.ju_scaleHandle(scale);
+    }
 }
 
 #pragma mark 拖动时赋值

@@ -112,6 +112,7 @@
 }
 - (void)juStatusBarOrientationChange:(NSNotification *)notification{
     if (ju_imgView.image) {
+        self.zoomScale=1;
         [self setImage:ju_imgView.image];
     }
 }

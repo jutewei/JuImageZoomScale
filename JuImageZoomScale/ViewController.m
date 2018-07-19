@@ -12,6 +12,7 @@
 #import "CollectionViewCell.h"
 @interface ViewController (){
     NSArray *arrList;
+    JuLargeImageVC *LargeImageVc;
 }
 @property (strong, nonatomic) IBOutlet UICollectionView *ju_collectView;
 
@@ -53,13 +54,17 @@
 -(UIViewController *)juSetImageVC:(NSIndexPath *)indexPath{
     UICollectionViewCell *cell=[_ju_collectView cellForItemAtIndexPath:indexPath];
     CGRect frame= [cell.superview convertRect:cell.frame toView:cell.window];
-    JuLargeImageVC *vc=[JuLargeImageVC initRect:^CGRect(id result) {
+    LargeImageVc=[JuLargeImageVC initRect:^CGRect(id result) {
         UICollectionViewCell *cell2=[self.ju_collectView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:[result intValue] inSection:0]];
         CGRect frame= [cell2.superview convertRect:cell2.frame toView:cell2.window];
         return frame;
     }];
-    [vc juSetImages:arrList currentIndex:indexPath.row startRect:frame];
-    return vc;
+    __weak typeof(self) weakSelf = self;
+    LargeImageVc.ju_scaleHandle = ^{
+        [weakSelf setNeedsStatusBarAppearanceUpdate];
+    };
+    [LargeImageVc juSetImages:arrList currentIndex:indexPath.row startRect:frame];
+    return LargeImageVc;
 }
 -(UIViewController *)shPreviewVC:(id <UIViewControllerPreviewing>)previewingContext{
     UICollectionViewCell *cell=(id)[previewingContext sourceView];
@@ -75,7 +80,9 @@
     //获取按压的cell所在行，[previewingContext sourceView]就是按压的那个视图
     return [self shPreviewVC:previewingContext];
 }
-
+-(BOOL)prefersStatusBarHidden{
+    return LargeImageVc.isHidderStatus;
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

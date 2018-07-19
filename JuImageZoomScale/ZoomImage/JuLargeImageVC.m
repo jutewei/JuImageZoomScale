@@ -13,6 +13,7 @@
 #import "JuImageObject.h"
 @interface JuLargeImageVC ()<UIViewControllerTransitioningDelegate>{
      JuImagesCollectView *ju_imgCollectView;
+
 }
 @property (nonatomic,strong) JuAnimated *ju_animator;
 @end
@@ -59,6 +60,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.automaticallyAdjustsScrollViewInsets=NO;
+
     ju_imgCollectView.ju_handle = self.ju_handle;
     [self.view addSubview:ju_imgCollectView];
     ju_imgCollectView.juEdge(UIEdgeInsetsMake(0, 0, 0, 0));
@@ -66,7 +68,21 @@
     ju_imgCollectView.ju_completion = ^{
         [weakSelf dismissViewControllerAnimated:NO completion:nil];
     };
+    ju_imgCollectView.ju_scaleHandle = ^(CGFloat scale) {
+        [weakSelf juSetBarStatus:scale];
+    };
     // Do any additional setup after loading the view.
+}
+-(void)juSetBarStatus:(CGFloat)scale{
+    BOOL hide=scale==1;
+    if (self.isHidderStatus!=hide) {
+        self.isHidderStatus=hide;
+        [self setNeedsStatusBarAppearanceUpdate];
+        if (self.ju_scaleHandle) {
+            self.ju_scaleHandle();
+        }
+    }
+
 }
 #pragma mark - UIViewControllerTransitioningDelegate
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
@@ -81,6 +97,9 @@
 -(void)juSetImages:(NSArray *)arrList currentIndex:(NSInteger)index startRect:(CGRect)frame{
 
     [self juSetImages:arrList thumbSize:CGSizeZero currentIndex:index startRect:frame];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+       [self juSetBarStatus:1];
+    });
 }
 -(void)juSetImages:(NSArray *)arrList thumbSize:(CGSize)size currentIndex:(NSInteger)index startRect:(CGRect)frame{
     [ju_imgCollectView juSetImages:[JuImageObject juSwithObject:arrList size:size] currentIndex:index rect:frame];
@@ -92,7 +111,9 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
+-(BOOL)prefersStatusBarHidden{
+    return self.isHidderStatus;
+}
 /*
 #pragma mark - Navigation
 

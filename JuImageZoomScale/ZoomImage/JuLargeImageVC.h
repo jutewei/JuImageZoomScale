@@ -15,5 +15,7 @@
 +(instancetype)initRect:(CGRect)frame images:(NSArray *)arrList currentIndex:(NSInteger)index thumbSize:(CGSize)size finishHandle:(JuHandle)handle;
 
 @property (nonatomic,copy) JuHandle ju_handle;
+@property (nonatomic,assign) BOOL isHidderStatus;
+@property (nonatomic,copy) JuCompletion ju_scaleHandle;
 -(void)juSetImages:(NSArray *)arrList currentIndex:(NSInteger)index startRect:(CGRect)frame;
 @end

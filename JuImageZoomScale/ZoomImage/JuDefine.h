@@ -14,6 +14,7 @@
 
 //打印信息设置
 typedef void(^JuCompletion)(void);//回调
+typedef void(^JuSalceHandle)(CGFloat scale);//回调
 typedef CGRect (^JuHandle)(id result);//坐标回调
 
 #define ju_dispatch_get_main_async(block)\
