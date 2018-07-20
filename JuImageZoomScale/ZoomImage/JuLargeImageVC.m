@@ -11,11 +11,14 @@
 #import "UIView+JuLayout.h"
 #import "JuAnimated.h"
 #import "JuImageObject.h"
+#import "JuFullWindow.h"
 @interface JuLargeImageVC ()<UIViewControllerTransitioningDelegate>{
      JuImagesCollectView *ju_imgCollectView;
+//    BOOL isLandscape;
 
 }
 @property (nonatomic,strong) JuAnimated *ju_animator;
+@property (nonatomic,assign) BOOL isHidderStatus;
 @end
 
 @implementation JuLargeImageVC
@@ -62,17 +65,27 @@
     self.automaticallyAdjustsScrollViewInsets=NO;
 
     ju_imgCollectView.ju_handle = self.ju_handle;
+    
     [self.view addSubview:ju_imgCollectView];
     ju_imgCollectView.juEdge(UIEdgeInsetsMake(0, 0, 0, 0));
     __weak typeof(self) weakSelf = self;
     ju_imgCollectView.ju_completion = ^{
-        [weakSelf dismissViewControllerAnimated:NO completion:nil];
+//        [weakSelf dismissViewControllerAnimated:NO completion:nil];
+        [weakSelf juHide];
     };
     ju_imgCollectView.ju_scaleHandle = ^(CGFloat scale) {
         [weakSelf juSetBarStatus:scale];
     };
     // Do any additional setup after loading the view.
 }
+-(void)juShow{
+    JuFullWindow *window=[JuFullWindow sharedClient];
+    [window juShowWindow:self];
+}
+-(void)juHide{
+    [[JuFullWindow sharedClient] juHideWindow];
+}
+
 -(void)juSetBarStatus:(CGFloat)scale{
     BOOL hide=scale==1;
     if (self.isHidderStatus!=hide) {
@@ -82,7 +95,6 @@
             self.ju_scaleHandle();
         }
     }
-
 }
 #pragma mark - UIViewControllerTransitioningDelegate
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
@@ -111,9 +123,19 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
--(BOOL)prefersStatusBarHidden{
-    return self.isHidderStatus;
+-(UIInterfaceOrientationMask)supportedInterfaceOrientations{
+    return UIInterfaceOrientationMaskAll;
 }
+//-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+//    [self setNeedsStatusBarAppearanceUpdate];
+//}
+
+
+//-(BOOL)prefersStatusBarHidden{
+//    UIDeviceOrientation deviceOrientation=[UIDevice currentDevice].orientation;
+//    BOOL isLandscape=deviceOrientation==UIDeviceOrientationLandscapeLeft||deviceOrientation==UIDeviceOrientationLandscapeRight;
+//    return self.isHidderStatus&&!isLandscape;
+//}
 /*
 #pragma mark - Navigation
 

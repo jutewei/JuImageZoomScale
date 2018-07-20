@@ -47,7 +47,7 @@
         [self.navigationController pushViewController:vc animated:YES];
     }else{
         JuLargeImageVC *vc=(id)[self juSetImageVC:indexPath];
-        [self presentViewController:vc animated:YES completion:nil];
+        [vc juShow];
     }
 }
 
@@ -59,10 +59,6 @@
         CGRect frame= [cell2.superview convertRect:cell2.frame toView:cell2.window];
         return frame;
     }];
-    __weak typeof(self) weakSelf = self;
-    LargeImageVc.ju_scaleHandle = ^{
-        [weakSelf setNeedsStatusBarAppearanceUpdate];
-    };
     [LargeImageVc juSetImages:arrList currentIndex:indexPath.row startRect:frame];
     return LargeImageVc;
 }
@@ -81,7 +77,10 @@
     return [self shPreviewVC:previewingContext];
 }
 -(BOOL)prefersStatusBarHidden{
-    return LargeImageVc.isHidderStatus;
+    return NO;
+}
+-(UIInterfaceOrientationMask)supportedInterfaceOrientations{
+    return UIInterfaceOrientationMaskPortrait;
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

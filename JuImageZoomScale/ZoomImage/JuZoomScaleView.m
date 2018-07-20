@@ -112,7 +112,7 @@
 }
 - (void)juStatusBarOrientationChange:(NSNotification *)notification{
     if (ju_imgView.image) {
-        self.zoomScale=1;
+
         [self setImage:ju_imgView.image];
     }
 }
@@ -201,6 +201,7 @@
 //设置图片展开
 - (void) setImage:(UIImage *)image{
     if (image){
+        self.zoomScale=1;
         ju_imgView.image=image;
         CGSize imgSize = image.size;
         //判断首先缩放的值
@@ -440,9 +441,9 @@
     CGPoint translation = [self.panGestureRecognizer translationInView:self];
     isBeginDown=(translation.y>0)&&gestureRecognizer.numberOfTouches==1;
     if (gestureRecognizer==self.panGestureRecognizer) {
-        if (fabs(translation.y) <= fabs(translation.x)) {// 手势冲突
-            return NO;
-        }
+//        if (fabs(translation.y) <= fabs(translation.x)) {// 手势冲突
+//            return NO;
+//        }
         if (translation.y<0&&self.contentSize.height<self.sizeH) {
             return NO;
         }

@@ -48,6 +48,8 @@
 		EBCC410E2074D043001DA272 /* JuLargeImageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EBCC41002074D043001DA272 /* JuLargeImageVC.m */; };
 		EBCC410F2074D043001DA272 /* JuProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = EBCC41012074D043001DA272 /* JuProgressView.m */; };
 		EBCC41102074D043001DA272 /* JuAlbumPreviewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EBCC41072074D043001DA272 /* JuAlbumPreviewVC.m */; };
+		EBD19C4A2101CD2A00972AE7 /* JuFullWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = EBD19C482101CD2A00972AE7 /* JuFullWindow.m */; };
+		EBD19C4D2101D1EA00972AE7 /* JuNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EBD19C4C2101D1EA00972AE7 /* JuNavigationVC.m */; };
 		EBD884AD207B6E4B00B58B04 /* JuAnimated.m in Sources */ = {isa = PBXBuildFile; fileRef = EBD884AC207B6E4B00B58B04 /* JuAnimated.m */; };
 /* End PBXBuildFile section */
 
@@ -131,6 +133,10 @@
 		EBCC41072074D043001DA272 /* JuAlbumPreviewVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JuAlbumPreviewVC.m; sourceTree = "<group>"; };
 		EBCC41082074D043001DA272 /* JuImagesCollectCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JuImagesCollectCell.h; sourceTree = "<group>"; };
 		EBCC41092074D043001DA272 /* JuImageObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JuImageObject.h; sourceTree = "<group>"; };
+		EBD19C482101CD2A00972AE7 /* JuFullWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JuFullWindow.m; sourceTree = "<group>"; };
+		EBD19C492101CD2A00972AE7 /* JuFullWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JuFullWindow.h; sourceTree = "<group>"; };
+		EBD19C4B2101D1EA00972AE7 /* JuNavigationVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JuNavigationVC.h; sourceTree = "<group>"; };
+		EBD19C4C2101D1EA00972AE7 /* JuNavigationVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JuNavigationVC.m; sourceTree = "<group>"; };
 		EBD884AB207B6E4B00B58B04 /* JuAnimated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JuAnimated.h; sourceTree = "<group>"; };
 		EBD884AC207B6E4B00B58B04 /* JuAnimated.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JuAnimated.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -172,6 +178,8 @@
 				EBCC404020746044001DA272 /* AppDelegate.m */,
 				EBCC404220746044001DA272 /* ViewController.h */,
 				EBCC404320746044001DA272 /* ViewController.m */,
+				EBD19C4B2101D1EA00972AE7 /* JuNavigationVC.h */,
+				EBD19C4C2101D1EA00972AE7 /* JuNavigationVC.m */,
 				EBA40479207DE59B00E9E1ED /* CollectionViewCell.h */,
 				EBA4047A207DE59B00E9E1ED /* CollectionViewCell.m */,
 				EBCC4097207469A4001DA272 /* 3.jpg */,
@@ -275,6 +283,8 @@
 				EBCC41002074D043001DA272 /* JuLargeImageVC.m */,
 				EBCC40FF2074D043001DA272 /* JuAlbumPreviewVC.h */,
 				EBCC41072074D043001DA272 /* JuAlbumPreviewVC.m */,
+				EBD19C492101CD2A00972AE7 /* JuFullWindow.h */,
+				EBD19C482101CD2A00972AE7 /* JuFullWindow.m */,
 				EBD884AB207B6E4B00B58B04 /* JuAnimated.h */,
 				EBD884AC207B6E4B00B58B04 /* JuAnimated.m */,
 			);
@@ -357,9 +367,11 @@
 				EBD884AD207B6E4B00B58B04 /* JuAnimated.m in Sources */,
 				EBCC40ED2074D004001DA272 /* UIImage+GIF.m in Sources */,
 				EBCC40F92074D004001DA272 /* UIButton+WebCache.m in Sources */,
+				EBD19C4D2101D1EA00972AE7 /* JuNavigationVC.m in Sources */,
 				EBCC40EF2074D004001DA272 /* SDWebImageCompat.m in Sources */,
 				EBCC40A720746BC5001DA272 /* UIView+JuConstraint.m in Sources */,
 				EBCC404420746044001DA272 /* ViewController.m in Sources */,
+				EBD19C4A2101CD2A00972AE7 /* JuFullWindow.m in Sources */,
 				EBCC410C2074D043001DA272 /* JuImageObject.m in Sources */,
 				EBCC40F82074D004001DA272 /* UIView+WebCacheOperation.m in Sources */,
 				EBCC40A820746BC5001DA272 /* UIView+JuLayGroup.m in Sources */,

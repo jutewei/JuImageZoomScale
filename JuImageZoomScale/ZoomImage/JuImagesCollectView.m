@@ -107,6 +107,8 @@
         }
         return;
     }
+    self.ju_scaleHandle(0);
+
     [UIView animateWithDuration:0.35 animations:^{
         self.ju_collectView.backgroundColor=[UIColor colorWithWhite:0 alpha:0];
     }completion:^(BOOL finished) {
