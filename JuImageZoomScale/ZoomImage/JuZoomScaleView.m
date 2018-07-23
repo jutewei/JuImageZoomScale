@@ -161,7 +161,7 @@
     imageOptions.synchronous = YES;///< 同步
     imageOptions.resizeMode=PHImageRequestOptionsResizeModeFast;///< 精准尺寸
     // 请求图片
-    [[PHImageManager defaultManager] requestImageForAsset:(PHAsset *)self targetSize:size contentMode:PHImageContentModeAspectFill options:imageOptions resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+    [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:size contentMode:PHImageContentModeAspectFill options:imageOptions resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         ju_dispatch_get_main_async(^{
             [self juFinishLoad:result];
         });
