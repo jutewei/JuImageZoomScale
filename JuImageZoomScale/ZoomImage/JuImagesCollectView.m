@@ -157,12 +157,14 @@
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
 
 //    if (  ju_itemWidth!=JU_Window_Width+20) {
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [_ju_collectView setContentOffset:CGPointMake(ju_currentIndex*(JU_Window_Width+20), 0)];
-//        });
+    ju_itemWidth=JU_Window_Width+20;
+     [_ju_collectView setContentOffset:CGPointMake(ju_currentIndex*ju_itemWidth, 0)];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [_ju_collectView setContentOffset:CGPointMake(ju_currentIndex*ju_itemWidth, 0)];
+        });
 //    }
 //      [self.superview layoutIfNeeded];
-    ju_itemWidth=JU_Window_Width+20;
+
     return CGSizeMake(ju_itemWidth, JU_Window_Height);
 }
 
