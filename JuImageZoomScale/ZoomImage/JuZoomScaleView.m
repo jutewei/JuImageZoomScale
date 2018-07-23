@@ -112,7 +112,6 @@
 }
 - (void)juStatusBarOrientationChange:(NSNotification *)notification{
     if (ju_imgView.image) {
-
         [self setImage:ju_imgView.image];
     }
 }
@@ -127,7 +126,7 @@
 /**
  设置图片
  */
-- (void) setImage:(id)imageObject originalRect:(CGRect)originalRect{
+- (void) setItemImage:(id)imageObject originalRect:(CGRect)originalRect{
     if (!imageObject) return;
 //    isFinishLoad=NO;
      _ju_imageM=imageObject;
@@ -232,6 +231,7 @@
         self.ju_imgView.frame = self->ju_originRect;
     }completion:^(BOOL finished) {
         self.contentSize=self.ju_imgView.frame.size;
+        self.isAnimate=NO;
     }];
 }
 //隐藏

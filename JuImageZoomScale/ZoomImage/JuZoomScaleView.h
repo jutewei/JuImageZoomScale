@@ -27,7 +27,7 @@
 
 //- (void) setContentWithFrame:(CGRect)rect isAnimate:(BOOL)isAnimate;
 
-- (void) setImage:(id)imageObject originalRect:(CGRect)originalRect;
+- (void) setItemImage:(id)imageObject originalRect:(CGRect)originalRect;
 //- (void) juStatusBarOrientationChange:(NSNotification *)notification;
 //- (void) juShowBigImage:(id)imageData  withSize:(CGSize)size;
 //- (void) juShowSmallImage:(id)imageData withSize:(CGSize)size;

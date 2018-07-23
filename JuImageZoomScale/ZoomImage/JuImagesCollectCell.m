@@ -44,7 +44,7 @@
 }
 -(void)juSetImage:(id)imageData originalFrame:(CGRect)frame{
     ju_scaleView.hidden=NO;
-    [ju_scaleView setImage:imageData originalRect:frame];
+    [ju_scaleView setItemImage:imageData originalRect:frame];
     ju_scaleView.ju_isAlbum=_ju_isAlbum;
 }
 @end

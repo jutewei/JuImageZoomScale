@@ -43,23 +43,27 @@
     collectView.juEdge(UIEdgeInsetsMake(0, 0, 0, 0));
     collectView.ju_Trail.constant=-20;
     _ju_collectView=collectView;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeFrame:) name:UIDeviceOrientationDidChangeNotification object:nil];
     [self layoutIfNeeded];
 }
 // 屏幕转动，改变cell的frame
-- (void)changeFrame:(NSNotification *)notification{
+- (void)changeFrame:(id )sender{
     NSMutableArray *arrCell=[NSMutableArray array];
     for (NSIndexPath *indexPath in self.ju_collectView.indexPathsForVisibleItems) {
         JuImagesCollectCell *cell=(id)[_ju_collectView cellForItemAtIndexPath:indexPath];
         [cell juSetContentHidden:indexPath.row!=ju_currentIndex];
         [arrCell addObject:cell];
     }
-    [_ju_collectView.collectionViewLayout invalidateLayout];
+//
+    if (!([[[UIDevice currentDevice]systemVersion] floatValue]>=11)) {
+        [_ju_collectView.collectionViewLayout invalidateLayout];
+    }
+//
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         for (JuImagesCollectCell *cell in arrCell) {
             [cell juSetContentHidden:NO];
         }
     });
+
 }
 -(UICollectionViewFlowLayout *)juSetCollectLayout{
     UICollectionViewFlowLayout *layout=[[UICollectionViewFlowLayout alloc]init];
@@ -90,7 +94,12 @@
     JuImagesCollectCell *cell=[collectionView dequeueReusableCellWithReuseIdentifier:@"JuImagesCollectCell" forIndexPath:indexPath];
     cell.ju_delegate=self;
     cell.ju_isAlbum=_ju_isAlbum;
-    [cell juSetImage:_ju_ArrList[indexPath.row] originalFrame:ju_startIndex==indexPath.row?ju_originalFrame:CGRectZero];
+    CGRect frame=CGRectZero;
+    if (ju_startIndex==indexPath.row) {
+        frame=ju_originalFrame;
+        ju_originalFrame=CGRectZero;
+    }
+    [cell juSetImage:_ju_ArrList[indexPath.row] originalFrame:frame];
 //    [cell juSetContentHidden:ju_currentIndex!=indexPath.row];
     return cell;
 }
@@ -147,17 +156,17 @@
 }
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
 
-    if (  ju_itemWidth!=JU_Window_Width+20) {
-        [_ju_collectView setContentOffset:CGPointMake(ju_currentIndex*(JU_Window_Width+20), 0)];
-    }
-      [self.superview layoutIfNeeded];
+//    if (  ju_itemWidth!=JU_Window_Width+20) {
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [_ju_collectView setContentOffset:CGPointMake(ju_currentIndex*(JU_Window_Width+20), 0)];
+//        });
+//    }
+//      [self.superview layoutIfNeeded];
     ju_itemWidth=JU_Window_Width+20;
     return CGSizeMake(ju_itemWidth, JU_Window_Height);
 }
 
-- (void)dealloc{
-    [[NSNotificationCenter defaultCenter]removeObserver:self];
-}
+
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
