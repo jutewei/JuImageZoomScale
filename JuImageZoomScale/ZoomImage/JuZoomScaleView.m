@@ -224,7 +224,6 @@
             ju_originRect = (CGRect){0,JU_Window_Height/2-imgViewHeight/2,JU_Window_Width,imgViewHeight};
         }
         [self juShowAnimation];
-
     }
 }
 - (void) juShowAnimation{

@@ -24,5 +24,5 @@
 @property (nonatomic,copy) JuHandle ju_handle;
 @property (nonatomic,copy) JuCompletion ju_completion;
 @property (nonatomic,copy) JuSalceHandle ju_scaleHandle;
-- (void)changeFrame:(id )sender;
+- (void)juWindowTransitionSize:(id )sender;
 @end

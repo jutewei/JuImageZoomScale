@@ -17,6 +17,8 @@ typedef void(^JuCompletion)(void);//回调
 typedef void(^JuSalceHandle)(CGFloat scale);//回调
 typedef CGRect (^JuHandle)(id result);//坐标回调
 
+#define IS_ON_IPAD      (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)      ///< 设备类型是iPad
+
 #define ju_dispatch_get_main_async(block)\
 if ([NSThread isMainThread]) {\
 block();\

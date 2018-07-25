@@ -42,11 +42,13 @@
     [self addSubview:collectView];
     collectView.juEdge(UIEdgeInsetsMake(0, 0, 0, 0));
     collectView.ju_Trail.constant=-20;
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(juWindowTransitionSize:)
+                                                     name:UIApplicationWillChangeStatusBarOrientationNotification object:nil];
     _ju_collectView=collectView;
     [self layoutIfNeeded];
 }
 // 屏幕转动，改变cell的frame
-- (void)changeFrame:(id )sender{
+- (void)juWindowTransitionSize:(id)sender{
     NSMutableArray *arrCell=[NSMutableArray array];
     for (NSIndexPath *indexPath in self.ju_collectView.indexPathsForVisibleItems) {
         JuImagesCollectCell *cell=(id)[_ju_collectView cellForItemAtIndexPath:indexPath];
@@ -54,7 +56,7 @@
         [arrCell addObject:cell];
     }
 //
-    if (!([[[UIDevice currentDevice]systemVersion] floatValue]>=11)) {
+    if (!([[[UIDevice currentDevice]systemVersion] floatValue]>=11)||IS_ON_IPAD) {
         [_ju_collectView.collectionViewLayout invalidateLayout];
     }
 //
@@ -158,10 +160,10 @@
 
 //    if (  ju_itemWidth!=JU_Window_Width+20) {
     ju_itemWidth=JU_Window_Width+20;
-     [_ju_collectView setContentOffset:CGPointMake(ju_currentIndex*ju_itemWidth, 0)];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [_ju_collectView setContentOffset:CGPointMake(ju_currentIndex*ju_itemWidth, 0)];
-        });
+    [_ju_collectView setContentOffset:CGPointMake(ju_currentIndex*ju_itemWidth, 0)];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [_ju_collectView setContentOffset:CGPointMake(ju_currentIndex*ju_itemWidth, 0)];
+    });
 //    }
 //      [self.superview layoutIfNeeded];
 
