@@ -19,8 +19,13 @@
             imageM.ju_image=imageObject;
             imageM.ju_imageType=JuImageTypeImage;
         }else if ([imageObject isKindOfClass:[NSString class]]){
+            NSString *stringUrl=imageObject;
             imageM.ju_imageUrl=imageObject;
-             imageM.ju_imageType=JuImageTypeUrl;
+            if ([stringUrl hasPrefix:@"http"]) {
+                imageM.ju_imageType=JuImageTypeUrl;
+            }else{
+                imageM.ju_imageType=JuImageTypeLocal;
+            }
         }else if([imageObject isKindOfClass:[PHAsset class]]){
             imageM.ju_asset=imageObject;
              imageM.ju_imageType=JuImageTypeAsset;

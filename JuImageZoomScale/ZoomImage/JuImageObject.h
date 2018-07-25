@@ -15,6 +15,7 @@
 typedef NS_ENUM(NSInteger,JuImageType){
     JuImageTypeImage,
     JuImageTypeUrl,
+    JuImageTypeLocal,
     JuImageTypeAsset,
 };
 @interface JuImageObject : NSObject

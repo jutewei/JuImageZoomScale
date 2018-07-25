@@ -147,7 +147,11 @@
             [self.juActivity startAnimating];
         }
         [self juGetNetImage:_ju_imageM.ju_imageUrl];
-    }else if(_ju_imageM.ju_imageType==JuImageTypeAsset){
+    }else if (_ju_imageM.ju_imageType==JuImageTypeLocal){
+        [self setImage:[UIImage imageWithContentsOfFile:_ju_imageM.ju_imageUrl]];
+        _ju_imageM.ju_progress=1;
+    }
+    else if(_ju_imageM.ju_imageType==JuImageTypeAsset){
         //可设置先预览小图再显示大图
         [self juGetAssetImage:_ju_imageM.ju_asset];
     }
