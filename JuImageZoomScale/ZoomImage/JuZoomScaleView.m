@@ -128,9 +128,7 @@
  */
 - (void) setItemImage:(id)imageObject originalRect:(CGRect)originalRect{
     if (!imageObject) return;
-//    isFinishLoad=NO;
      _ju_imageM=imageObject;
-
     if (originalRect.size.width>0) {
         _isAnimate=YES;
         ju_imgView.frame = originalRect;
@@ -148,6 +146,17 @@
         }
         [self juGetNetImage:_ju_imageM.ju_imageUrl];
     }else if (_ju_imageM.ju_imageType==JuImageTypeLocal){
+        [self setImage:[UIImage imageWithContentsOfFile:_ju_imageM.ju_imageUrl]];
+        _ju_imageM.ju_progress=1;
+    }
+    else if(_ju_imageM.ju_imageType==JuImageTypeAsset){
+        //可设置先预览小图再显示大图
+        [self juGetAssetImage:_ju_imageM.ju_asset];
+    }
+}
+
+- (void)setItemFullImage{
+    if (_ju_imageM.ju_imageType==JuImageTypeLocal){
         [self setImage:[UIImage imageWithContentsOfFile:_ju_imageM.ju_imageUrl]];
         _ju_imageM.ju_progress=1;
     }

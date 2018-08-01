@@ -105,6 +105,7 @@
 //    [cell juSetContentHidden:ju_currentIndex!=indexPath.row];
     return cell;
 }
+
 -(CGRect)juCurrentCellRect{
     if (self.ju_handle) {
         return  self.ju_handle(@(ju_currentIndex));
@@ -154,7 +155,10 @@
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     CGFloat scrollViewX=scrollView.contentOffset.x+JU_Window_Width/3;
     ju_currentIndex=scrollViewX/CGRectGetWidth(scrollView.frame);
+}
 
+-(void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
+    ;
 }
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
 
