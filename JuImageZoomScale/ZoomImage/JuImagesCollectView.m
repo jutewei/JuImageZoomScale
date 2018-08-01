@@ -86,6 +86,8 @@
     [_ju_collectView setContentOffset:CGPointMake(ju_currentIndex*(JU_Window_Width+20), 0)];
     [UIView animateWithDuration:0.3 animations:^{
         self.ju_collectView.backgroundColor=[UIColor colorWithWhite:0 alpha:1];
+    }completion:^(BOOL finished) {
+         [self juShowFullImage];
     }];
 }
 
@@ -155,10 +157,13 @@
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     CGFloat scrollViewX=scrollView.contentOffset.x+JU_Window_Width/3;
     ju_currentIndex=scrollViewX/CGRectGetWidth(scrollView.frame);
+    [self juShowFullImage];
 }
-
--(void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
-    ;
+-(void)juShowFullImage{
+    if (ju_currentIndex<self.ju_ArrList.count) {
+        JuImagesCollectCell *imgCell=(JuImagesCollectCell *)[_ju_collectView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:ju_currentIndex inSection:0]];
+        [imgCell juSetFullImage];
+    }
 }
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
 

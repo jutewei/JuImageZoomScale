@@ -24,6 +24,7 @@
             if ([stringUrl hasPrefix:@"http"]) {
                 imageM.ju_imageType=JuImageTypeUrl;
             }else{
+//                 imageM.ju_thumbImageUrl=[NSString stringWithFormat:@"%@mini",imageObject];
                 imageM.ju_imageType=JuImageTypeLocal;
             }
         }else if([imageObject isKindOfClass:[PHAsset class]]){

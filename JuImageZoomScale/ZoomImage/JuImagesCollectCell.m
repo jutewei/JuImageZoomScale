@@ -47,7 +47,7 @@
     [ju_scaleView setItemImage:imageData originalRect:frame];
     ju_scaleView.ju_isAlbum=_ju_isAlbum;
 }
--(void)juSetFullImage:(id)imageData{
-  
+-(void)juSetFullImage{
+    [ju_scaleView setItemFullImage];
 }
 @end

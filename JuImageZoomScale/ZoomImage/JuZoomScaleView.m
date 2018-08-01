@@ -127,7 +127,7 @@
  设置图片
  */
 - (void) setItemImage:(id)imageObject originalRect:(CGRect)originalRect{
-    if (!imageObject) return;
+    if (!imageObject||[_ju_imageM isEqual:imageObject]) return;
      _ju_imageM=imageObject;
     if (originalRect.size.width>0) {
         _isAnimate=YES;
@@ -146,12 +146,11 @@
         }
         [self juGetNetImage:_ju_imageM.ju_imageUrl];
     }else if (_ju_imageM.ju_imageType==JuImageTypeLocal){
-        [self setImage:[UIImage imageWithContentsOfFile:_ju_imageM.ju_imageUrl]];
-        _ju_imageM.ju_progress=1;
+        [self setImage:[UIImage imageWithContentsOfFile:_ju_imageM.ju_thumbImageUrl]];
     }
     else if(_ju_imageM.ju_imageType==JuImageTypeAsset){
         //可设置先预览小图再显示大图
-        [self juGetAssetImage:_ju_imageM.ju_asset];
+        [self juGetAssetImage:_ju_imageM.ju_asset isThumb:YES];
     }
 }
 
@@ -162,21 +161,28 @@
     }
     else if(_ju_imageM.ju_imageType==JuImageTypeAsset){
         //可设置先预览小图再显示大图
-        [self juGetAssetImage:_ju_imageM.ju_asset];
+        [self juGetAssetImage:_ju_imageM.ju_asset isThumb:NO];
     }
 }
 
 //读取相册图片相册图片
--(void)juGetAssetImage:(PHAsset *)asset {
+-(void)juGetAssetImage:(PHAsset *)asset isThumb:(BOOL)isThumb{
     [self.juActivity startAnimating];
     CGSize size = CGSizeMake(asset.pixelWidth, asset.pixelHeight);
+    if (isThumb) {
+        size = CGSizeMake(JU_Window_Width, JU_Window_Height);
+    }
     PHImageRequestOptions *imageOptions = [[PHImageRequestOptions alloc] init];
     imageOptions.synchronous = YES;///< 同步
     imageOptions.resizeMode=PHImageRequestOptionsResizeModeFast;///< 精准尺寸
     // 请求图片
     [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:size contentMode:PHImageContentModeAspectFill options:imageOptions resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         ju_dispatch_get_main_async(^{
-            [self juFinishLoad:result];
+            if (isThumb) {
+                [self setImage:result];
+            }else{
+                [self juFinishLoad:result];
+            }
         });
     }];
 }
