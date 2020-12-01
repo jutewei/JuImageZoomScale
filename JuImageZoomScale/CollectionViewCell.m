@@ -7,8 +7,9 @@
 //
 
 #import "CollectionViewCell.h"
-#import "UIView+JuLayout.h"
-#import "UIImageView+ModCache.h"
+#import "JuLayoutFrame.h"
+#import "UIImageView+WebCache.h"
+
 @implementation CollectionViewCell
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -25,7 +26,8 @@
     if ([imageData isKindOfClass:[UIImage class]]) {
         ju_imageView.image=imageData;
     }else{
-        [ju_imageView setImageWithStr:imageData];
+        [ju_imageView sd_setImageWithURL:[NSURL URLWithString:imageData]];
+//        [ju_imageView setImageWithStr:imageData];
     }
 }
 @end

@@ -43,7 +43,9 @@
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.row>3) {
         JuAlbumPreviewVC *vc=[[JuAlbumPreviewVC alloc]init];
-        [vc juSetImages:arrList currentIndex:indexPath.row];
+        [vc juSetImages:arrList currentIndex:indexPath.row finish:^(NSArray *arrList) {
+            
+        }];
         [self.navigationController pushViewController:vc animated:YES];
     }else{
         JuLargeImageVC *vc=(id)[self juSetImageVC:indexPath];
