@@ -137,17 +137,17 @@
 //    //在本例子中,图片的最大高度设置为500,最大宽度为屏幕宽度,当然自己也可以根据自己的需要去调整自己的图片框的大小
     [UIView animateWithDuration:0.3 animations:^{
         self.transform = CGAffineTransformRotate(self.transform, M_PI_2);
-        if (self.frame.size.width >= [UIScreen mainScreen].bounds.size.width) { //过长
+        if (self.frame.size.width >= self.juWindowWidth) { //过长
             //计算比例系数
-            CGFloat kSacale = [UIScreen mainScreen].bounds.size.width/self.frame.size.width;
+            CGFloat kSacale = self.juWindowWidth /self.frame.size.width;
             //大小缩放
             self.transform = CGAffineTransformScale(self.transform,kSacale, kSacale);
         }else{
             //判断当宽度缩放到屏幕宽度之后,高度与500哪一个更大
-            CGFloat kSacale = [UIScreen mainScreen].bounds.size.width / self.frame.size.width;
-//            if (self.frame.size.height * kSacale >= 500) {
-//                kSacale = 500 / self.frame.size.height;
-//            }
+            CGFloat kSacale = self.juWindowWidth / self.frame.size.width;
+            if (self.frame.size.height * kSacale > self.juWindowHeight) {
+                kSacale = self.juWindowHeight / self.frame.size.height;
+            }
             self.transform = CGAffineTransformScale(self.transform,kSacale, kSacale);
         }
     }];
@@ -171,5 +171,42 @@
     //把最终的图片存到相册看看是否成功
 //    UIImageWriteToSavedPhotosAlbum(newImage, nil, nil, nil);
     return newImage;
+}
+
+//设置图片展开
+- (CGRect) juSetImage:(UIImage *)image{
+    CGRect ju_originRect=CGRectZero;
+    if (image){
+        self.image=image;
+        CGSize imgSize = image.size;
+        //判断首先缩放的值
+        float scaleX = self.juWindowWidth/imgSize.width;
+        float scaleY = self.juWindowHeight/imgSize.height;
+        //倍数小的，先到边缘
+        if (scaleX > scaleY){
+            //Y方向先到边缘
+            float imgViewWidth = imgSize.width*scaleY;
+            ju_originRect = (CGRect){self.juWindowWidth/2-imgViewWidth/2,0,imgViewWidth,self.juWindowHeight};
+        }
+        else{
+            //X先到边缘
+            float imgViewHeight = imgSize.height*scaleX;
+            ju_originRect = (CGRect){0,self.juWindowHeight/2-imgViewHeight/2+self.juSafeBottom,self.juWindowWidth,imgViewHeight};
+        }
+    }
+    return ju_originRect;
+}
+-(CGFloat)juSafeBottom{
+    CGFloat safe=0;
+    if (@available(iOS 11.0, *)) {
+        safe=[UIApplication sharedApplication].keyWindow.safeAreaInsets.bottom;
+    }
+    return safe+60;
+}
+-(CGFloat)juWindowWidth{
+    return [UIScreen mainScreen].bounds.size.width;
+}
+-(CGFloat)juWindowHeight{
+    return [UIScreen mainScreen].bounds.size.height-self.juSafeBottom*2;
 }
 @end

@@ -10,6 +10,7 @@
 		A44813040180E81BE37ADB7F /* libPods-JuImageZoomScale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AFD14888FB121A9B5E525ED /* libPods-JuImageZoomScale.a */; };
 		EB9084332591E0EB00EDD795 /* UIImage+category.m in Sources */ = {isa = PBXBuildFile; fileRef = EB9084312591E0EB00EDD795 /* UIImage+category.m */; };
 		EB9084392591EAEE00EDD795 /* JuImageRotatingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EB9084382591EAEE00EDD795 /* JuImageRotatingVC.m */; };
+		EB90843D2591F62200EDD795 /* 12.jpg in Resources */ = {isa = PBXBuildFile; fileRef = EB90843C2591F62200EDD795 /* 12.jpg */; };
 		EBA4047B207DE59B00E9E1ED /* CollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EBA4047A207DE59B00E9E1ED /* CollectionViewCell.m */; };
 		EBA4047D207DF73300E9E1ED /* show.gif in Resources */ = {isa = PBXBuildFile; fileRef = EBA4047C207DF73300E9E1ED /* show.gif */; };
 		EBC5060425764D4D0038A617 /* JuAnimated.m in Sources */ = {isa = PBXBuildFile; fileRef = EBC505DA25764D4D0038A617 /* JuAnimated.m */; };
@@ -55,6 +56,7 @@
 		EB9084312591E0EB00EDD795 /* UIImage+category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+category.m"; sourceTree = "<group>"; };
 		EB9084372591EAEE00EDD795 /* JuImageRotatingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JuImageRotatingVC.h; sourceTree = "<group>"; };
 		EB9084382591EAEE00EDD795 /* JuImageRotatingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JuImageRotatingVC.m; sourceTree = "<group>"; };
+		EB90843C2591F62200EDD795 /* 12.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 12.jpg; sourceTree = "<group>"; };
 		EBA40479207DE59B00E9E1ED /* CollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollectionViewCell.h; sourceTree = "<group>"; };
 		EBA4047A207DE59B00E9E1ED /* CollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CollectionViewCell.m; sourceTree = "<group>"; };
 		EBA4047C207DF73300E9E1ED /* show.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = show.gif; sourceTree = "<group>"; };
@@ -242,17 +244,17 @@
 		EBC5061825764D640038A617 /* JuLayout */ = {
 			isa = PBXGroup;
 			children = (
-				EBC5061925764D640038A617 /* UIView+JuLayGroup.h */,
-				EBC5061A25764D640038A617 /* UIView+JuConstraint.h */,
-				EBC5061B25764D640038A617 /* UIView+JuLayout.m */,
-				EBC5061C25764D640038A617 /* UIView+Frame.m */,
+				EBC5062225764D640038A617 /* JuLayout.h */,
 				EBC5061D25764D640038A617 /* JuLayout.m */,
 				EBC5061E25764D640038A617 /* JuLayoutFrame.h */,
+				EBC5062325764D640038A617 /* UIView+Frame.h */,
+				EBC5061C25764D640038A617 /* UIView+Frame.m */,
+				EBC5061A25764D640038A617 /* UIView+JuConstraint.h */,
 				EBC5061F25764D640038A617 /* UIView+JuConstraint.m */,
+				EBC5061925764D640038A617 /* UIView+JuLayGroup.h */,
 				EBC5062025764D640038A617 /* UIView+JuLayGroup.m */,
 				EBC5062125764D640038A617 /* UIView+JuLayout.h */,
-				EBC5062225764D640038A617 /* JuLayout.h */,
-				EBC5062325764D640038A617 /* UIView+Frame.h */,
+				EBC5061B25764D640038A617 /* UIView+JuLayout.m */,
 			);
 			path = JuLayout;
 			sourceTree = "<group>";
@@ -290,6 +292,7 @@
 				EBA4047A207DE59B00E9E1ED /* CollectionViewCell.m */,
 				EBCC4097207469A4001DA272 /* 3.jpg */,
 				EBCC40A92074784D001DA272 /* 1.jpg */,
+				EB90843C2591F62200EDD795 /* 12.jpg */,
 				EBA4047C207DF73300E9E1ED /* show.gif */,
 				EBCC404520746044001DA272 /* Main.storyboard */,
 				EBCC404820746045001DA272 /* Assets.xcassets */,
@@ -360,6 +363,7 @@
 			files = (
 				EBA4047D207DF73300E9E1ED /* show.gif in Resources */,
 				EBCC404C20746045001DA272 /* LaunchScreen.storyboard in Resources */,
+				EB90843D2591F62200EDD795 /* 12.jpg in Resources */,
 				EBCC404920746045001DA272 /* Assets.xcassets in Resources */,
 				EBCC404720746044001DA272 /* Main.storyboard in Resources */,
 				EBCC4098207469A4001DA272 /* 3.jpg in Resources */,

@@ -22,6 +22,15 @@
 
 - (void)juRotationView;
 
-- (UIImage *)juSaveRotationResult;
+- (UIImage *_Nullable)juSaveRotationResult;
+
+- (CGRect)juSetImage:(UIImage *_Nullable)image;
+
+-(CGFloat)juSafeBottom;
+
+
+-(CGFloat)juWindowWidth;
+
+-(CGFloat)juWindowHeight;
 
 @end
