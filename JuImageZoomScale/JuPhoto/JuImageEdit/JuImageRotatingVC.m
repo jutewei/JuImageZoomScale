@@ -12,26 +12,37 @@
 
 @implementation JuImageRotatingVC{
     UIImageView *ju_imageView;
+    UIImage *ju_imageData;
 }
 
-
+-(instancetype)initWithImage:(UIImage *)image{
+    self=[super init];
+    if (self) {
+        self.modalPresentationStyle=UIModalPresentationFullScreen;
+        ju_imageData=image;
+    }
+    return self;
+}
 -(void)viewDidLoad{
     [super viewDidLoad];
     self.view.backgroundColor=[UIColor blackColor];
     [self juActionView];
+    if (ju_imageData) {
+        ju_imageView.juFrame([ju_imageView juSetImage:ju_imageData]);
+        ju_imageView.image=ju_imageData;
+    }
 }
 
 -(void)setJu_image:(UIImage *)ju_image{
-//    [ju_imageView juRemoveAllConstraints];
+    ju_imageData=ju_image;
+    [ju_imageView juRemoveAllConstraints];
     ju_imageView.juFrame([ju_imageView juSetImage:ju_image]);
     ju_imageView.image=ju_image;
 }
 
 -(void)juActionView{
+    
     if (!ju_imageView) {
-//        UIView *view=[[UIView alloc]init];
-//        [self.view addSubview:view];
-//        view.juSafeEdge(UIEdgeInsetsMake(40, 0, 40, 0));
         ju_imageView=[[UIImageView alloc]init];
         [self.view addSubview:ju_imageView];
     }
@@ -58,7 +69,9 @@
     }else if(sender.tag==1){
         [ju_imageView juRotationView];
     }else{
-        [ju_imageView juSaveRotationResult];
+        if (self.ju_handle) {
+            self.ju_handle([ju_imageView juSaveRotationResult]);
+        }
         [self dismissViewControllerAnimated:YES completion:nil];
     }
 }

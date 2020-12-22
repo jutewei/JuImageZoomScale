@@ -28,10 +28,10 @@
     // Do any additional setup after loading the view, typically from a nib.
 }
 - (IBAction)juRotate:(id)sender {
-    JuImageRotatingVC *vc=[[JuImageRotatingVC alloc]init];
-    vc.modalPresentationStyle=UIModalPresentationFullScreen;
+    JuImageRotatingVC *vc=[[JuImageRotatingVC alloc]initWithImage:[UIImage imageNamed:@"1.jpg"]];
+   
     [self presentViewController:vc animated:YES completion:nil];
-    vc.ju_image=[UIImage imageNamed:@"1.jpg"];
+//    vc.ju_image=[UIImage imageNamed:@"1.jpg"];
 }
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
