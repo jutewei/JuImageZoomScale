@@ -10,6 +10,7 @@
 #import "JuAlbumPreviewVC.h"
 #import "JuLargeImageVC.h"
 #import "CollectionViewCell.h"
+#import "JuImageRotatingVC.h"
 @interface ViewController (){
     NSArray *arrList;
     JuLargeImageVC *LargeImageVc;
@@ -25,6 +26,12 @@
     arrList=@[[UIImage imageNamed:@"3.jpg"],[UIImage imageNamed:@"1.jpg"],@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/03/16-49-060144-1442918276.jpeg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-37-080036-1235239760.jpg",@"https://cms.pifubao.com.cn/cms/resource/upload/2018/04/02/15-15-220471701481425.jpg"];
     [_ju_collectView registerClass:[CollectionViewCell class] forCellWithReuseIdentifier:@"CollectionViewCell"];
     // Do any additional setup after loading the view, typically from a nib.
+}
+- (IBAction)juRotate:(id)sender {
+    JuImageRotatingVC *vc=[[JuImageRotatingVC alloc]init];
+    vc.modalPresentationStyle=UIModalPresentationFullScreen;
+    [self presentViewController:vc animated:YES completion:nil];
+    vc.ju_image=[UIImage imageNamed:@"1.jpg"];
 }
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
